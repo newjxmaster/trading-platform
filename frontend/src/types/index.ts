@@ -227,6 +227,10 @@ export interface FilterOptions {
   minDividendYield?: number;
   sortBy?: string;
   sortOrder?: 'asc' | 'desc';
+  page?: number;
+  limit?: number;
+  filter?: string;
+  sort?: string;
 }
 
 // Admin Types
@@ -283,4 +287,74 @@ export interface SocketTradeUpdate {
   quantity: number;
   price: number;
   timestamp: string;
+}
+
+// ============================================
+// Auth Types
+// ============================================
+
+export interface AuthTokens {
+  accessToken: string;
+  refreshToken: string;
+}
+
+export interface LoginCredentials {
+  email: string;
+  password: string;
+}
+
+export interface RegisterData {
+  fullName: string;
+  email: string;
+  phone?: string;
+  password: string;
+  role?: UserRole;
+}
+
+// ============================================
+// WebSocket Types
+// ============================================
+
+export enum WebSocketEvents {
+  CONNECT = 'connect',
+  DISCONNECT = 'disconnect',
+  PRICE_UPDATE = 'price_update',
+  ORDER_MATCHED = 'order_matched',
+  NEW_TRADE = 'new_trade',
+  ORDER_BOOK_UPDATE = 'order_book_update',
+  DIVIDEND_DISTRIBUTED = 'dividend_distributed',
+  PORTFOLIO_UPDATE = 'portfolio_update',
+}
+
+export interface PriceUpdatePayload {
+  companyId: string;
+  price: number;
+  change: number;
+  changePercent: number;
+}
+
+export interface OrderMatchedPayload {
+  orderId: string;
+  companyId: string;
+  quantity: number;
+  price: number;
+  side: OrderSide;
+}
+
+export interface NewTradePayload {
+  tradeId: string;
+  companyId: string;
+  quantity: number;
+  price: number;
+  totalAmount: number;
+}
+
+export interface DividendDistributedPayload {
+  dividendId: string;
+  companyId: string;
+  companyName: string;
+  amount: number;
+  sharesHeld: number;
+  payoutAmount: number;
+  distributedAt: Date;
 }

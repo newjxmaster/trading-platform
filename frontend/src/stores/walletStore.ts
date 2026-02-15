@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { paymentApi } from '@services/api';
-import { Transaction, PaymentMethod } from '@types/index';
+import { paymentApi } from '../services/api';
+import { Transaction, PaymentMethod } from '../types';
 
 // ============================================
 // Wallet Store

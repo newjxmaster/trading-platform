@@ -155,6 +155,7 @@ model User {
   transactions          Transaction[]
   dividend_payouts      DividendPayout[]
   verified_reports      RevenueReport[] @relation("VerifiedByUser")
+  verified_companies    Company[] @relation("VerifiedByAdmin")
   admin_logs            AdminLog[]
   
   @@index([email])
@@ -208,6 +209,7 @@ model Company {
   verification_status         VerificationStatus @default(pending)
   verification_notes          String?            @db.Text
   verified_by                 String?            @db.Uuid
+  verifier                    User?              @relation("VerifiedByAdmin", fields: [verified_by], references: [id])
   verified_at                 DateTime?
   listing_status              ListingStatus      @default(draft)
   

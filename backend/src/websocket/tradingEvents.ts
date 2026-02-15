@@ -387,8 +387,8 @@ async function sendInitialPortfolio(socket: Socket, userId: string): Promise<voi
       include: {
         company: {
           select: {
-            businessName: true,
-            currentPrice: true
+            business_name: true,
+            current_price: true
           }
         }
       }
@@ -396,13 +396,13 @@ async function sendInitialPortfolio(socket: Socket, userId: string): Promise<voi
 
     const portfolio = holdings.map(h => ({
       companyId: h.companyId,
-      companyName: h.company.businessName,
+      companyName: h.company.business_name,
       sharesOwned: h.sharesOwned,
       averageBuyPrice: h.averageBuyPrice,
-      currentPrice: h.company.currentPrice,
-      currentValue: h.sharesOwned * h.company.currentPrice,
+      currentPrice: h.company.current_price,
+      currentValue: h.sharesOwned * h.company.current_price,
       totalInvested: h.totalInvested,
-      profitLoss: (h.sharesOwned * h.company.currentPrice) - h.totalInvested
+      profitLoss: (h.sharesOwned * h.company.current_price) - h.totalInvested
     }));
 
     socket.emit('portfolio_update', {

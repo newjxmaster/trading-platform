@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { tradingApi } from '@services/api';
-import { StockHolding, PortfolioSummary, Trade, OrderBook, PlaceOrderData } from '@types/index';
+import { tradingApi } from '../services/api';
+import { StockHolding, PortfolioSummary, Trade, OrderBook, PlaceOrderData } from '../types';
 
 // ============================================
 // Trading Store

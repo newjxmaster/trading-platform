@@ -1,5 +1,5 @@
 import axios, { AxiosInstance, AxiosResponse } from 'axios';
-import { ApiResponse } from '@types/index';
+import { ApiResponse } from '../types';
 
 // ============================================
 // API Configuration
@@ -41,12 +41,49 @@ apiClient.interceptors.response.use(
 );
 
 // ============================================
+// API Helper Types
+// ============================================
+
+export interface ApiErrorType {
+  message: string;
+  status?: number;
+  code?: string;
+}
+
+// ============================================
+// API Helper Functions
+// ============================================
+
+export function handleApiError(error: unknown): ApiErrorType {
+  if (error && typeof error === 'object' && 'response' in error) {
+    const axiosError = error as { response?: { data?: { message?: string; error?: string }; status?: number } };
+    return {
+      message: axiosError.response?.data?.message || axiosError.response?.data?.error || 'An error occurred',
+      status: axiosError.response?.status,
+    };
+  }
+  
+  if (error instanceof Error) {
+    return { message: error.message };
+  }
+  
+  return { message: 'An unknown error occurred' };
+}
+
+export function extractData<T>(response: AxiosResponse<ApiResponse<T>>): T {
+  if (response.data.success && response.data.data !== undefined) {
+    return response.data.data;
+  }
+  throw new Error(response.data.message || 'Failed to extract data from response');
+}
+
+// ============================================
 // Auth API
 // ============================================
 
 export const authApi = {
   login: (email: string, password: string) =>
-    apiClient.post<ApiResponse<{ user: unknown; token: string }>>('/auth/login', { email, password }),
+    apiClient.post<ApiResponse<{ user: unknown; tokens: { accessToken: string; refreshToken: string } }>>('/auth/login', { email, password }),
   
   register: (data: {
     fullName: string;
@@ -54,7 +91,7 @@ export const authApi = {
     phone?: string;
     password: string;
     role?: string;
-  }) => apiClient.post<ApiResponse<{ user: unknown; token: string }>>('/auth/register', data),
+  }) => apiClient.post<ApiResponse<{ user: unknown; tokens: { accessToken: string; refreshToken: string } }>>('/auth/register', data),
   
   logout: () => apiClient.post<ApiResponse<void>>('/auth/logout'),
   

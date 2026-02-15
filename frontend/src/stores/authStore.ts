@@ -1,8 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
-import { User, AuthTokens, LoginCredentials, RegisterData } from '@types/index';
-import { authApi } from '@services/api';
-import { handleApiError, extractData } from '@services/api';
+import { User, AuthTokens, LoginCredentials, RegisterData } from '../types';
+import { authApi, handleApiError, extractData } from '../services/api';
 
 // ============================================
 // Auth State Interface
@@ -47,7 +46,7 @@ export const useAuthStore = create<AuthState>()(
         set({ isLoading: true, error: null });
 
         try {
-          const response = await authApi.login(credentials);
+          const response = await authApi.login(credentials.email, credentials.password);
           const data = extractData(response);
 
           set({

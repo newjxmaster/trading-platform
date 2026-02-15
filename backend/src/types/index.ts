@@ -352,3 +352,11 @@ export interface QueueMetrics {
   failed: number;
   delayed: number;
 }
+
+// ============================================================================
+// Re-exports from other type modules
+// ============================================================================
+
+export { DatabaseClient } from '../utils/database';
+export { BankApiClient } from '../automation/revenueCalculation';
+export { VerificationDecision, RevenueVerificationDecision } from './company.types';

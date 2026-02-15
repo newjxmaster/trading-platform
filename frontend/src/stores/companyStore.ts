@@ -1,6 +1,6 @@
 import { create } from 'zustand';
-import { companyApi } from '@services/api';
-import { Company, FilterOptions, CompanyRegistrationData } from '@types/index';
+import { companyApi } from '../services/api';
+import { Company, FilterOptions, CompanyRegistrationData } from '../types';
 
 // ============================================
 // Company Store

@@ -128,8 +128,9 @@ model users {
   transactions        transactions[]
   dividend_payouts    dividend_payouts[]
   admin_logs          admin_logs[]
-  revenue_reports     revenue_reports[] @relation("VerifiedBy")
-  verification_checklist verification_checklist[] @relation("VerifiedByAdmin")
+  revenue_reports      revenue_reports[] @relation("VerifiedBy")
+  verified_companies   company[] @relation("VerifiedByAdmin")
+  verified_checklists  verification_checklist[] @relation("VerifiedChecklistByAdmin")
 
   @@index([email])
   @@index([role])
@@ -233,7 +234,7 @@ model verification_checklist {
 
   // Relations
   company                         company   @relation(fields: [company_id], references: [id], onDelete: Cascade)
-  verifier                        users?    @relation("VerifiedByAdmin", fields: [verified_by], references: [id])
+  verifier                        users?    @relation("VerifiedChecklistByAdmin", fields: [verified_by], references: [id])
 
   @@index([company_id])
 }
