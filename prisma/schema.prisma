@@ -1,0 +1,633 @@
+// Trading Platform for SMBs - Prisma Schema
+// PostgreSQL Database Schema
+// Generated: February 2025
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// ============================================
+// ENUMS
+// ============================================
+
+enum KycStatus {
+  pending
+  verified
+  rejected
+}
+
+enum UserRole {
+  investor
+  business_owner
+  admin
+}
+
+enum BusinessType {
+  small_business
+  medium_business
+}
+
+enum VerificationStatus {
+  pending
+  approved
+  rejected
+}
+
+enum ListingStatus {
+  draft
+  ipo
+  active
+  suspended
+}
+
+enum RevenueVerificationStatus {
+  auto_verified
+  pending_review
+  verified
+  rejected
+}
+
+enum DividendPaymentStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+enum PayoutStatus {
+  pending
+  processing
+  completed
+  failed
+}
+
+enum PaymentMethod {
+  wave
+  orange_money
+  bank_transfer
+  wallet
+  card
+  crypto
+}
+
+enum OrderType {
+  market
+  limit
+}
+
+enum OrderSide {
+  buy
+  sell
+}
+
+enum OrderStatus {
+  pending
+  partial
+  filled
+  cancelled
+}
+
+enum TransactionType {
+  deposit
+  withdrawal
+  dividend
+  trade
+  fee
+}
+
+enum TransactionStatus {
+  pending
+  processing
+  completed
+  failed
+  cancelled
+}
+
+enum BankTransactionType {
+  credit
+  debit
+}
+
+// ============================================
+// TABLES
+// ============================================
+
+// Users & Authentication
+model User {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  email                 String    @unique
+  password_hash         String
+  full_name             String
+  phone                 String?
+  
+  // KYC Fields
+  kyc_status            KycStatus @default(pending)
+  id_document_url       String?
+  selfie_url            String?
+  kyc_verified_at       DateTime?
+  
+  // Wallet Balances
+  wallet_fiat           Decimal   @default(0.00) @db.Decimal(15, 2)
+  wallet_crypto_usdt    Decimal   @default(0.00000000) @db.Decimal(15, 8)
+  wallet_crypto_usdc    Decimal   @default(0.00000000) @db.Decimal(15, 8)
+  wallet_crypto_btc     Decimal   @default(0.00000000) @db.Decimal(15, 8)
+  wallet_crypto_eth     Decimal   @default(0.00000000) @db.Decimal(15, 8)
+  
+  // Role
+  role                  UserRole  @default(investor)
+  
+  // Timestamps
+  created_at            DateTime  @default(now())
+  updated_at            DateTime  @updatedAt
+  last_login_at         DateTime?
+  
+  // Relations
+  companies             Company[]
+  stock_holdings        StockHolding[]
+  orders                Order[]
+  buy_trades            Trade[]   @relation("BuyerTrades")
+  sell_trades           Trade[]   @relation("SellerTrades")
+  transactions          Transaction[]
+  dividend_payouts      DividendPayout[]
+  verified_reports      RevenueReport[] @relation("VerifiedByUser")
+  admin_logs            AdminLog[]
+  
+  @@index([email])
+  @@index([kyc_status])
+  @@index([role])
+  @@index([created_at])
+  @@map("users")
+}
+
+// Companies/Businesses
+model Company {
+  id                          String             @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // Owner Relation
+  owner_id                    String             @db.Uuid
+  owner                       User               @relation(fields: [owner_id], references: [id], onDelete: Cascade)
+  
+  // Business Information
+  business_name               String
+  business_type               BusinessType
+  category                    String?            // 'supermarket', 'factory', 'restaurant', etc.
+  description                 String?            @db.Text
+  address                     String?
+  city                        String?
+  country                     String?
+  years_in_operation          Int?
+  
+  // Registration Documents
+  registration_certificate_url String
+  manager_id_card_url         String
+  business_photo_url          String
+  
+  // Bank Integration
+  partner_bank_name           String
+  bank_account_number         String
+  bank_account_name           String?
+  bank_api_connected          Boolean            @default(false)
+  bank_access_token           String?            // Encrypted OAuth token
+  bank_token_expires_at       DateTime?
+  
+  // IPO Details
+  initial_valuation           Decimal            @db.Decimal(15, 2)
+  total_shares                Int
+  available_shares            Int
+  retained_shares             Int                @default(0)
+  current_price               Decimal            @db.Decimal(10, 2)
+  ipo_date                    DateTime?
+  minimum_investment          Decimal?           @db.Decimal(10, 2)
+  
+  // Status
+  verification_status         VerificationStatus @default(pending)
+  verification_notes          String?            @db.Text
+  verified_by                 String?            @db.Uuid
+  verified_at                 DateTime?
+  listing_status              ListingStatus      @default(draft)
+  
+  // Performance Metrics
+  last_month_revenue          Decimal?           @db.Decimal(15, 2)
+  this_month_revenue          Decimal?           @db.Decimal(15, 2)
+  total_dividends_paid        Decimal?           @default(0.00) @db.Decimal(15, 2)
+  
+  // Timestamps
+  created_at                  DateTime           @default(now())
+  updated_at                  DateTime           @updatedAt
+  
+  // Relations
+  revenue_reports            RevenueReport[]
+  dividends                  Dividend[]
+  stock_holdings             StockHolding[]
+  orders                     Order[]
+  trades                     Trade[]
+  price_history              PriceHistory[]
+  bank_transactions          BankTransaction[]
+  
+  @@index([owner_id])
+  @@index([business_type])
+  @@index([category])
+  @@index([verification_status])
+  @@index([listing_status])
+  @@index([current_price])
+  @@index([created_at])
+  @@map("companies")
+}
+
+// Revenue Tracking (from Bank API)
+model RevenueReport {
+  id                    String                    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // Company Relation
+  company_id            String                    @db.Uuid
+  company               Company                   @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  
+  // Time Period
+  report_month          Int                       // 1-12
+  report_year           Int
+  period_start          DateTime
+  period_end            DateTime
+  
+  // Financial Data (from Bank API)
+  total_deposits        Decimal                   @db.Decimal(15, 2)
+  total_withdrawals     Decimal                   @db.Decimal(15, 2)
+  net_revenue           Decimal                   @db.Decimal(15, 2)
+  
+  // Manual Inputs (if needed)
+  operating_costs       Decimal?                  @db.Decimal(15, 2)
+  other_expenses        Decimal?                  @db.Decimal(15, 2)
+  
+  // Calculated Fields
+  gross_profit          Decimal?                  @db.Decimal(15, 2)
+  platform_fee          Decimal                   @db.Decimal(15, 2) // 5% of net_revenue
+  net_profit            Decimal                   @db.Decimal(15, 2)
+  dividend_pool         Decimal                   @db.Decimal(15, 2) // 60% of net_profit
+  reinvestment_amount   Decimal                   @db.Decimal(15, 2) // 40% of net_profit
+  
+  // Status
+  verification_status   RevenueVerificationStatus @default(auto_verified)
+  verified_by           String?                   @db.Uuid
+  verifier              User?                     @relation("VerifiedByUser", fields: [verified_by], references: [id])
+  verified_at           DateTime?
+  verification_notes    String?                   @db.Text
+  
+  // Timestamps
+  created_at            DateTime                  @default(now())
+  
+  // Relations
+  dividend              Dividend?
+  
+  @@unique([company_id, report_month, report_year])
+  @@index([company_id])
+  @@index([report_month, report_year])
+  @@index([verification_status])
+  @@index([created_at])
+  @@map("revenue_reports")
+}
+
+// Dividends
+model Dividend {
+  id                    String                @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // Relations
+  company_id            String                @db.Uuid
+  company               Company               @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  
+  revenue_report_id     String                @unique @db.Uuid
+  revenue_report        RevenueReport         @relation(fields: [revenue_report_id], references: [id], onDelete: Cascade)
+  
+  // Dividend Details
+  total_dividend_pool   Decimal               @db.Decimal(15, 2)
+  total_shares_eligible Int
+  amount_per_share      Decimal               @db.Decimal(10, 4)
+  
+  // Status
+  payment_status        DividendPaymentStatus @default(pending)
+  distribution_date     DateTime?
+  
+  // Timestamps
+  created_at            DateTime              @default(now())
+  
+  // Relations
+  payouts               DividendPayout[]
+  
+  @@index([company_id])
+  @@index([payment_status])
+  @@index([distribution_date])
+  @@index([created_at])
+  @@map("dividends")
+}
+
+// Individual Dividend Payouts
+model DividendPayout {
+  id                    String        @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // Relations
+  dividend_id           String        @db.Uuid
+  dividend              Dividend      @relation(fields: [dividend_id], references: [id], onDelete: Cascade)
+  
+  user_id               String        @db.Uuid
+  user                  User          @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  // Payout Details
+  shares_held           Int
+  payout_amount         Decimal       @db.Decimal(15, 2)
+  payment_method        PaymentMethod
+  payment_reference     String?
+  
+  // Status
+  status                PayoutStatus  @default(pending)
+  paid_at               DateTime?
+  
+  // Timestamps
+  created_at            DateTime      @default(now())
+  
+  @@index([dividend_id])
+  @@index([user_id])
+  @@index([status])
+  @@index([created_at])
+  @@map("dividend_payouts")
+}
+
+// Stock Holdings (Portfolio)
+model StockHolding {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // Relations
+  user_id               String    @db.Uuid
+  user                  User      @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  company_id            String    @db.Uuid
+  company               Company   @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  
+  // Holding Details
+  shares_owned          Int       @default(0)
+  average_buy_price     Decimal?  @db.Decimal(10, 2) // Cost basis
+  total_invested        Decimal?  @db.Decimal(15, 2)
+  total_dividends_earned Decimal  @default(0.00) @db.Decimal(15, 2)
+  
+  // First/Last Purchase Tracking
+  first_purchased_at    DateTime?
+  last_purchased_at     DateTime?
+  
+  // Timestamps
+  created_at            DateTime  @default(now())
+  updated_at            DateTime  @updatedAt
+  
+  @@unique([user_id, company_id])
+  @@index([user_id])
+  @@index([company_id])
+  @@index([shares_owned])
+  @@map("stock_holdings")
+}
+
+// Trading Orders (Order Book)
+model Order {
+  id                    String      @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // Relations
+  user_id               String      @db.Uuid
+  user                  User        @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  company_id            String      @db.Uuid
+  company               Company     @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  
+  // Order Details
+  order_type            OrderType
+  side                  OrderSide
+  
+  quantity              Int
+  price                 Decimal?    @db.Decimal(10, 2) // NULL for market orders
+  
+  filled_quantity       Int         @default(0)
+  remaining_quantity    Int
+  
+  // Status
+  status                OrderStatus @default(pending)
+  
+  // Timestamps
+  created_at            DateTime    @default(now())
+  updated_at            DateTime    @updatedAt
+  expires_at            DateTime?   // For limit orders
+  
+  // Relations
+  buy_trades            Trade[]     @relation("BuyOrder")
+  sell_trades           Trade[]     @relation("SellOrder")
+  
+  @@index([user_id])
+  @@index([company_id])
+  @@index([side])
+  @@index([status])
+  @@index([order_type])
+  @@index([price])
+  @@index([created_at])
+  @@index([company_id, side, status])
+  @@index([company_id, side, status, price])
+  @@map("orders")
+}
+
+// Trades (Executed Transactions)
+model Trade {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // Order Relations
+  buy_order_id          String    @db.Uuid
+  buy_order             Order     @relation("BuyOrder", fields: [buy_order_id], references: [id], onDelete: Cascade)
+  
+  sell_order_id         String    @db.Uuid
+  sell_order            Order     @relation("SellOrder", fields: [sell_order_id], references: [id], onDelete: Cascade)
+  
+  // User Relations
+  buyer_id              String    @db.Uuid
+  buyer                 User      @relation("BuyerTrades", fields: [buyer_id], references: [id], onDelete: Cascade)
+  
+  seller_id             String    @db.Uuid
+  seller                User      @relation("SellerTrades", fields: [seller_id], references: [id], onDelete: Cascade)
+  
+  // Company Relation
+  company_id            String    @db.Uuid
+  company               Company   @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  
+  // Trade Details
+  quantity              Int
+  price                 Decimal   @db.Decimal(10, 2)
+  total_amount          Decimal   @db.Decimal(15, 2)
+  
+  platform_fee          Decimal   @db.Decimal(15, 2) // 0.5% trading fee
+  
+  // Timestamp
+  executed_at           DateTime  @default(now())
+  
+  @@index([buy_order_id])
+  @@index([sell_order_id])
+  @@index([buyer_id])
+  @@index([seller_id])
+  @@index([company_id])
+  @@index([executed_at])
+  @@index([company_id, executed_at])
+  @@map("trades")
+}
+
+// Transactions (Deposits/Withdrawals)
+model Transaction {
+  id                    String            @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // User Relation
+  user_id               String            @db.Uuid
+  user                  User              @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  
+  // Transaction Details
+  transaction_type      TransactionType
+  payment_method        PaymentMethod
+  
+  amount                Decimal           @db.Decimal(15, 2)
+  currency              String            @default("USD") // USD, XOF, BTC, ETH, USDT, USDC
+  
+  // Fees
+  fee_amount            Decimal?          @db.Decimal(15, 2)
+  fee_currency          String?
+  
+  // Status
+  status                TransactionStatus @default(pending)
+  
+  // External References
+  reference_id          String?           // External payment reference
+  external_transaction_id String?
+  
+  // Metadata
+  metadata              Json?             // Store payment provider details
+  
+  // Crypto-specific
+  crypto_address        String?
+  crypto_tx_hash        String?
+  crypto_confirmations  Int?
+  
+  // Bank-specific
+  bank_account_number   String?
+  bank_reference        String?
+  
+  // Timestamps
+  created_at            DateTime          @default(now())
+  updated_at            DateTime          @updatedAt
+  completed_at          DateTime?
+  
+  @@index([user_id])
+  @@index([transaction_type])
+  @@index([payment_method])
+  @@index([status])
+  @@index([reference_id])
+  @@index([created_at])
+  @@index([user_id, created_at])
+  @@map("transactions")
+}
+
+// Stock Price History (for charts)
+model PriceHistory {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // Company Relation
+  company_id            String    @db.Uuid
+  company               Company   @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  
+  // Price Data
+  price                 Decimal   @db.Decimal(10, 2)
+  volume                Int       @default(0) // Shares traded
+  
+  // Performance Metrics (optional)
+  revenue_growth        Decimal?  @db.Decimal(5, 4)
+  profit_margin         Decimal?  @db.Decimal(5, 4)
+  performance_score     Decimal?  @db.Decimal(5, 4)
+  
+  // Timestamp
+  timestamp             DateTime  @default(now())
+  
+  @@index([company_id])
+  @@index([timestamp])
+  @@index([company_id, timestamp])
+  @@index([company_id, timestamp(sort: Desc)])
+  @@map("price_history")
+}
+
+// Bank API Transactions (Raw Data)
+model BankTransaction {
+  id                    String              @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // Company Relation
+  company_id            String              @db.Uuid
+  company               Company             @relation(fields: [company_id], references: [id], onDelete: Cascade)
+  
+  // Transaction Details
+  transaction_date      DateTime
+  transaction_type      BankTransactionType
+  amount                Decimal             @db.Decimal(15, 2)
+  balance_after         Decimal?            @db.Decimal(15, 2)
+  description           String?             @db.Text
+  
+  // Bank Reference
+  bank_reference        String?
+  bank_transaction_id   String?             // External bank transaction ID
+  
+  // Category (auto-classified)
+  category              String?             // 'sales', 'expense', 'transfer', etc.
+  
+  // Timestamps
+  created_at            DateTime            @default(now())
+  synced_at             DateTime            @default(now())
+  
+  @@index([company_id])
+  @@index([transaction_date])
+  @@index([company_id, transaction_date])
+  @@index([transaction_type])
+  @@index([bank_reference])
+  @@map("bank_transactions")
+}
+
+// Admin Actions Log
+model AdminLog {
+  id                    String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  
+  // Admin Relation
+  admin_id              String    @db.Uuid
+  admin                 User      @relation(fields: [admin_id], references: [id], onDelete: Cascade)
+  
+  // Action Details
+  action_type           String    // 'approve_company', 'verify_revenue', 'suspend_user', etc.
+  target_type           String    // 'company', 'user', 'revenue_report', etc.
+  target_id             String?   @db.Uuid
+  
+  // Details
+  details               Json?     // Store additional context
+  ip_address            String?
+  user_agent            String?
+  
+  // Previous/Current Values (for audit)
+  previous_values       Json?
+  current_values        Json?
+  
+  // Timestamp
+  created_at            DateTime  @default(now())
+  
+  @@index([admin_id])
+  @@index([action_type])
+  @@index([target_type])
+  @@index([target_id])
+  @@index([created_at])
+  @@index([admin_id, created_at])
+  @@map("admin_logs")
+}
+
+// ============================================
+// VIEWS (Optional - for performance)
+// ============================================
+
+// Note: Views can be created via raw SQL migration for complex queries
+// Example views that could be useful:
+// - user_portfolio_summary
+// - company_performance_metrics
+// - daily_trading_volume
+// - monthly_revenue_summary

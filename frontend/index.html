@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
+    <meta name="theme-color" content="#2563eb" />
+    <meta name="description" content="TradeFlow - Invest in Small & Medium Businesses. A trading platform where businesses can raise capital through IPOs and investors can buy/sell stocks." />
+    <meta name="keywords" content="trading, investment, stocks, SMB, small business, medium business, IPO, dividends" />
+    <meta name="author" content="TradeFlow" />
+    
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="TradeFlow - Invest in Small & Medium Businesses" />
+    <meta property="og:description" content="A trading platform where businesses can raise capital through IPOs and investors can buy/sell stocks with crypto or fiat payments." />
+    <meta property="og:image" content="/og-image.png" />
+    
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="TradeFlow - Invest in Small & Medium Businesses" />
+    <meta name="twitter:description" content="A trading platform where businesses can raise capital through IPOs and investors can buy/sell stocks." />
+    
+    <!-- Preconnect to external domains -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+    
+    <title>TradeFlow - Invest in Small & Medium Businesses</title>
+    
+    <!-- Critical CSS for initial load -->
+    <style>
+      /* Prevent FOUC (Flash of Unstyled Content) */
+      html {
+        background-color: #f8fafc;
+      }
+      
+      /* Loading spinner for initial load */
+      #root:empty::before {
+        content: '';
+        display: block;
+        width: 40px;
+        height: 40px;
+        border: 3px solid #e2e8f0;
+        border-top-color: #2563eb;
+        border-radius: 50%;
+        animation: spin 1s linear infinite;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+      }
+      
+      @keyframes spin {
+        to {
+          transform: translate(-50%, -50%) rotate(360deg);
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    
+    <!-- No-JS fallback -->
+    <noscript>
+      <div style="padding: 2rem; text-align: center; font-family: system-ui, sans-serif;">
+        <h1 style="color: #1e293b; margin-bottom: 1rem;">JavaScript Required</h1>
+        <p style="color: #64748b;">
+          TradeFlow requires JavaScript to function. Please enable JavaScript in your browser settings.
+        </p>
+      </div>
+    </noscript>
+  </body>
+</html>
