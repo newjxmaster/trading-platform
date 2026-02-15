@@ -3,6 +3,8 @@
  * Type definitions for cron jobs, queues, and automated processes
  */
 
+import { Request } from 'express';
+
 // ============================================================================
 // Database Entity Types (based on specification schema)
 // ============================================================================
@@ -351,6 +353,52 @@ export interface QueueMetrics {
   completed: number;
   failed: number;
   delayed: number;
+}
+
+// ============================================================================
+// Express Request Types
+// ============================================================================
+
+export interface AuthenticatedRequest extends Request {
+  user?: {
+    id: string;
+    email: string;
+    role: string;
+  };
+}
+
+// ============================================================================
+// Error Types
+// ============================================================================
+
+export interface ApiError extends Error {
+  statusCode?: number;
+  errors?: string[];
+  code?: string;
+}
+
+export interface ErrorResponse {
+  success: false;
+  error: string;
+  message?: string;
+  errors?: string[];
+}
+
+// ============================================================================
+// Auth Types
+// ============================================================================
+
+export interface RegisterUserData {
+  email: string;
+  password: string;
+  fullName: string;
+  phone?: string;
+  role?: string;
+}
+
+export interface LoginUserData {
+  email: string;
+  password: string;
 }
 
 // ============================================================================

@@ -138,7 +138,27 @@ class Logger {
   static forContext(context: string): Logger {
     return new Logger(context);
   }
+
+  // Static methods for direct usage
+  static debug(message: string, metadata?: Record<string, unknown>): void {
+    defaultLogger.debug(message, metadata);
+  }
+
+  static info(message: string, metadata?: Record<string, unknown>): void {
+    defaultLogger.info(message, metadata);
+  }
+
+  static warn(message: string, metadata?: Record<string, unknown>): void {
+    defaultLogger.warn(message, metadata);
+  }
+
+  static error(message: string, error?: Error, metadata?: Record<string, unknown>): void {
+    defaultLogger.error(message, error, metadata);
+  }
 }
+
+// Default logger instance for static methods
+const defaultLogger = Logger.forContext('default');
 
 // ============================================================================
 // Pre-configured Loggers for Different Modules
