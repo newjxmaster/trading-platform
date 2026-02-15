@@ -120,6 +120,12 @@ start_services() {
         log "Seed may have already been applied"
     }
     
+    # Seed admin user
+    log "Creating admin user..."
+    docker-compose -f docker/docker-compose.yml run --rm app npm run db:seed:admin || {
+        log "Admin seed may have already been applied"
+    }
+    
     # Start all services
     log "Starting all services..."
     docker-compose -f docker/docker-compose.yml up -d
