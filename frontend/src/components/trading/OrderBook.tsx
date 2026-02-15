@@ -1,8 +1,8 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, Activity } from 'lucide-react';
+import { Activity } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Badge } from '@components/ui/Badge';
-import { OrderBook as OrderBookType } from '@types/index';
+import { OrderBook as OrderBookType } from '../../types';
 import { formatCurrency, formatNumber } from '@utils/formatters';
 
 // ============================================
@@ -64,7 +64,7 @@ export const OrderBook: React.FC<OrderBookProps> = ({ orderBook, currentPrice })
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedBuyOrders.map((order, index) => (
+                  {sortedBuyOrders.map((order) => (
                     <OrderRow 
                       key={order.id} 
                       order={order} 
@@ -100,7 +100,7 @@ export const OrderBook: React.FC<OrderBookProps> = ({ orderBook, currentPrice })
                   </tr>
                 </thead>
                 <tbody>
-                  {sortedSellOrders.map((order, index) => (
+                  {sortedSellOrders.map((order) => (
                     <OrderRow 
                       key={order.id} 
                       order={order} 

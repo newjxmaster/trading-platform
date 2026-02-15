@@ -5,8 +5,6 @@ import {
   TrendingUp, 
   DollarSign,
   Activity,
-  Clock,
-  CheckCircle2,
   AlertCircle,
   ArrowUpRight,
   ArrowDownRight
@@ -16,8 +14,8 @@ import { Button } from '@components/ui/Button';
 import { Badge } from '@components/ui/Badge';
 import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { adminApi } from '@services/api';
-import { AdminStats } from '@types/index';
-import { formatCurrency, formatNumber, formatCompactNumber } from '@utils/formatters';
+import { AdminStats } from '../../types';
+import { formatCurrency, formatNumber } from '../../utils/formatters';
 
 // ============================================
 // Admin Dashboard Component
@@ -108,14 +106,14 @@ export const AdminDashboard: React.FC = () => {
         />
         <StatCard
           title="Trading Volume"
-          value={formatCompactCurrency(stats?.totalTradingVolume || 0)}
+          value={formatCurrency(stats?.totalTradingVolume || 0)}
           change={+23}
           icon={TrendingUp}
           color="warning"
         />
         <StatCard
           title="Dividends Paid"
-          value={formatCompactCurrency(stats?.totalDividendsDistributed || 0)}
+          value={formatCurrency(stats?.totalDividendsDistributed || 0)}
           change={+8}
           icon={DollarSign}
           color="secondary"
@@ -173,7 +171,7 @@ export const AdminDashboard: React.FC = () => {
                   variant="outline" 
                   className="w-full justify-start"
                   leftIcon={<Building2 className="w-4 h-4" />}
-                  href="/admin/approvals"
+                  onClick={() => window.location.href = '/admin/approvals'}
                 >
                   Review Pending Companies
                   {stats?.pendingVerifications ? (
@@ -186,7 +184,7 @@ export const AdminDashboard: React.FC = () => {
                   variant="outline" 
                   className="w-full justify-start"
                   leftIcon={<DollarSign className="w-4 h-4" />}
-                  href="/admin/revenue"
+                  onClick={() => window.location.href = '/admin/revenue'}
                 >
                   Verify Revenue Reports
                 </Button>
@@ -194,7 +192,7 @@ export const AdminDashboard: React.FC = () => {
                   variant="outline" 
                   className="w-full justify-start"
                   leftIcon={<Users className="w-4 h-4" />}
-                  href="/admin/users"
+                  onClick={() => window.location.href = '/admin/users'}
                 >
                   Manage Users
                 </Button>
@@ -202,7 +200,7 @@ export const AdminDashboard: React.FC = () => {
                   variant="outline" 
                   className="w-full justify-start"
                   leftIcon={<Activity className="w-4 h-4" />}
-                  href="/admin/analytics"
+                  onClick={() => window.location.href = '/admin/analytics'}
                 >
                   View Analytics
                 </Button>

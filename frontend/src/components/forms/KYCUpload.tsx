@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { Upload, X, FileText, Image, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Upload, X, FileText, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from '@components/ui/Button';
 
 // ============================================

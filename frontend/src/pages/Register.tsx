@@ -5,7 +5,7 @@ import { useForm } from '@hooks/useForm';
 import { useAuth } from '@hooks/useAuth';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
-import { Select } from '@components/ui/Select';
+
 import { AuthLayout } from '@components/layout/Layout';
 import { cn } from '@utils/helpers';
 import { 
@@ -48,10 +48,7 @@ type RegisterFormData = z.infer<typeof registerSchema>;
 // Role Options
 // ============================================
 
-const roleOptions = [
-  { value: 'investor', label: 'Investor - I want to invest in businesses' },
-  { value: 'business_owner', label: 'Business Owner - I want to raise capital' },
-];
+
 
 // ============================================
 // Registration Page Component

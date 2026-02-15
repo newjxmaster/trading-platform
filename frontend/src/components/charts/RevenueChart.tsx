@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  BarChart,
   Bar,
   XAxis,
   YAxis,
@@ -11,7 +10,7 @@ import {
   Line,
   ComposedChart,
 } from 'recharts';
-import { RevenueReport } from '@types/index';
+import { RevenueReport } from '../../types';
 import { formatCurrency } from '@utils/formatters';
 
 // ============================================

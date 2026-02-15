@@ -15,7 +15,7 @@ import {
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Badge } from '@components/ui/Badge';
-import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
+
 import { companyApi } from '@services/api';
 import { formatCurrency, formatNumber } from '@utils/formatters';
 

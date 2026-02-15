@@ -3,18 +3,16 @@ import { useNavigate } from 'react-router-dom';
 import { 
   DollarSign, 
   PieChart, 
-  TrendingUp,
   CheckCircle2,
   ArrowRight,
   ArrowLeft,
-  AlertCircle,
   Calculator,
   Info
 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
-import { Badge } from '@components/ui/Badge';
+
 import { formatCurrency, formatNumber } from '@utils/formatters';
 
 // ============================================

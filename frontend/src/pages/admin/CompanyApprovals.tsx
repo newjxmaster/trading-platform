@@ -12,14 +12,14 @@ import {
   AlertCircle,
   Clock
 } from 'lucide-react';
-import { Card, CardHeader, CardContent } from '@components/ui/Card';
+import { Card, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Badge } from '@components/ui/Badge';
 import { Modal } from '@components/ui/Modal';
 import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { adminApi } from '@services/api';
-import { Company } from '@types/index';
+import { Company } from '../../types';
 import { formatCurrency, formatDate, formatBusinessType } from '@utils/formatters';
 
 // ============================================
@@ -40,7 +40,7 @@ export const CompanyApprovals: React.FC = () => {
   const [isLoading, setIsLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
-  const [checklist, setChecklist] = useState<VerificationChecklist>({
+  const [_checklist, _setChecklist] = useState<VerificationChecklist>({
     registrationCertificate: false,
     managerIdCard: false,
     businessPhoto: false,
@@ -251,27 +251,27 @@ export const CompanyApprovals: React.FC = () => {
                 <ChecklistItem
                   label="Registration Certificate"
                   checked={!!selectedCompany.registrationCertificateUrl}
-                  onChange={(checked) => setChecklist(prev => ({ ...prev, registrationCertificate: checked }))}
+                  onChange={(checked: boolean) => _setChecklist((prev: VerificationChecklist) => ({ ...prev, registrationCertificate: checked }))}
                 />
                 <ChecklistItem
                   label="Manager ID Card"
                   checked={!!selectedCompany.managerIdCardUrl}
-                  onChange={(checked) => setChecklist(prev => ({ ...prev, managerIdCard: checked }))}
+                  onChange={(checked: boolean) => _setChecklist((prev: VerificationChecklist) => ({ ...prev, managerIdCard: checked }))}
                 />
                 <ChecklistItem
                   label="Business Photo"
                   checked={!!selectedCompany.businessPhotoUrl}
-                  onChange={(checked) => setChecklist(prev => ({ ...prev, businessPhoto: checked }))}
+                  onChange={(checked: boolean) => _setChecklist((prev: VerificationChecklist) => ({ ...prev, businessPhoto: checked }))}
                 />
                 <ChecklistItem
                   label="Bank Account Connected"
                   checked={selectedCompany.bankApiConnected}
-                  onChange={(checked) => setChecklist(prev => ({ ...prev, bankConnected: checked }))}
+                  onChange={(checked: boolean) => _setChecklist((prev: VerificationChecklist) => ({ ...prev, bankConnected: checked }))}
                 />
                 <ChecklistItem
                   label="IPO Details Configured"
                   checked={selectedCompany.initialValuation > 0}
-                  onChange={(checked) => setChecklist(prev => ({ ...prev, ipoDetails: checked }))}
+                  onChange={(checked: boolean) => _setChecklist((prev: VerificationChecklist) => ({ ...prev, ipoDetails: checked }))}
                 />
               </div>
             </div>

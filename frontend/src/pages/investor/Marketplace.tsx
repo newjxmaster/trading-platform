@@ -3,9 +3,6 @@ import { useNavigate } from 'react-router-dom';
 import { 
   Search, 
   Filter, 
-  SlidersHorizontal, 
-  TrendingUp, 
-  TrendingDown,
   Building2,
   X
 } from 'lucide-react';
@@ -14,13 +11,13 @@ import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Select } from '@components/ui/Select';
 import { Badge } from '@components/ui/Badge';
-import { Modal } from '@components/ui/Modal';
+
 import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { CompanyCard } from '@components/trading/CompanyCard';
 import { useSocket } from '@hooks/useSocket';
 import { companyApi } from '@services/api';
-import { Company, FilterOptions, BusinessType } from '@types/index';
-import { formatCurrency, formatPercentage } from '@utils/formatters';
+import { Company, FilterOptions } from '../../types';
+import { formatCurrency } from '../../utils/formatters';
 import { debounce } from '@utils/helpers';
 
 // ============================================
@@ -113,7 +110,7 @@ export const Marketplace: React.FC = () => {
           company.id === data.companyId
             ? { 
                 ...company, 
-                currentPrice: data.newPrice,
+                currentPrice: data.price,
                 priceChange: data.change,
                 priceChangePercent: data.changePercent
               }

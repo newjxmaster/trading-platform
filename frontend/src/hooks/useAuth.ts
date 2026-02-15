@@ -1,6 +1,6 @@
 import { useCallback, useEffect } from 'react';
 import { useAuthStore, selectUser, selectIsAuthenticated, selectIsLoading, selectAuthError } from '@stores/authStore';
-import { LoginCredentials, RegisterData, UserRole } from '@types/index';
+import { LoginCredentials, RegisterData, UserRole } from '../types';
 
 // ============================================
 // useAuth Hook

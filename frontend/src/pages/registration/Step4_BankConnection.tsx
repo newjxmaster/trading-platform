@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
-  Building2, 
   CreditCard, 
   CheckCircle2,
   ArrowRight,
@@ -15,7 +14,7 @@ import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Badge } from '@components/ui/Badge';
-import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
+
 
 // ============================================
 // Step 4: Bank Connection Component

@@ -7,13 +7,11 @@ import {
   CartesianGrid,
   Tooltip,
   ResponsiveContainer,
-  BarChart,
   Bar,
   ComposedChart,
 } from 'recharts';
-import { Card } from '@components/ui/Card';
-import { PriceHistory } from '@types/index';
-import { formatCurrency, formatDate } from '@utils/formatters';
+import { PriceHistory } from '../../types';
+import { formatCurrency } from '../../utils/formatters';
 
 // ============================================
 // Stock Price Chart Component

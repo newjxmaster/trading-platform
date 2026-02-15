@@ -2,6 +2,16 @@
 // Helpers Utility
 // ============================================
 
+import { type ClassValue, clsx } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+
+/**
+ * Merge Tailwind CSS classes with clsx
+ */
+export const cn = (...inputs: ClassValue[]) => {
+  return twMerge(clsx(inputs));
+};
+
 /**
  * Debounce function
  */
@@ -10,7 +20,7 @@ export const debounce = <T extends (...args: unknown[]) => unknown>(
   wait: number
 ): ((...args: Parameters<T>) => void) => {
   let timeout: ReturnType<typeof setTimeout> | null = null;
-  
+
   return (...args: Parameters<T>) => {
     if (timeout) clearTimeout(timeout);
     timeout = setTimeout(() => func(...args), wait);
@@ -25,7 +35,7 @@ export const throttle = <T extends (...args: unknown[]) => unknown>(
   limit: number
 ): ((...args: Parameters<T>) => void) => {
   let inThrottle = false;
-  
+
   return (...args: Parameters<T>) => {
     if (!inThrottle) {
       func(...args);
@@ -73,7 +83,7 @@ export const deepClone = <T>(obj: T): T => {
   if (obj === null || typeof obj !== 'object') return obj;
   if (obj instanceof Date) return new Date(obj.getTime()) as unknown as T;
   if (Array.isArray(obj)) return obj.map(deepClone) as unknown as T;
-  
+
   const cloned = {} as T;
   for (const key in obj) {
     if (Object.prototype.hasOwnProperty.call(obj, key)) {
@@ -88,13 +98,13 @@ export const deepClone = <T>(obj: T): T => {
  */
 export const getPasswordStrength = (password: string): { score: number; label: string; color: string } => {
   let score = 0;
-  
+
   if (password.length >= 8) score++;
   if (password.length >= 12) score++;
   if (/[a-z]/.test(password) && /[A-Z]/.test(password)) score++;
   if (/\d/.test(password)) score++;
   if (/[^a-zA-Z0-9]/.test(password)) score++;
-  
+
   const strengthMap: Record<number, { label: string; color: string }> = {
     0: { label: 'Very Weak', color: 'bg-danger-500' },
     1: { label: 'Weak', color: 'bg-danger-400' },
@@ -103,7 +113,7 @@ export const getPasswordStrength = (password: string): { score: number; label: s
     4: { label: 'Strong', color: 'bg-success-500' },
     5: { label: 'Very Strong', color: 'bg-success-600' },
   };
-  
+
   return { score, ...strengthMap[score] };
 };
 
@@ -130,7 +140,7 @@ export const buildQueryString = (params: Record<string, string | number | boolea
     .filter(([, value]) => value !== undefined && value !== null && value !== '')
     .map(([key, value]) => `${encodeURIComponent(key)}=${encodeURIComponent(String(value))}`)
     .join('&');
-  
+
   return query ? `?${query}` : '';
 };
 
@@ -140,16 +150,16 @@ export const buildQueryString = (params: Record<string, string | number | boolea
 export const parseQueryString = (queryString: string): Record<string, string> => {
   const params: Record<string, string> = {};
   const query = queryString.replace(/^\?/, '');
-  
+
   if (!query) return params;
-  
+
   query.split('&').forEach((param) => {
     const [key, value] = param.split('=');
     if (key) {
       params[decodeURIComponent(key)] = decodeURIComponent(value || '');
     }
   });
-  
+
   return params;
 };
 
@@ -174,7 +184,7 @@ export const sortBy = <T>(array: T[], key: keyof T, order: 'asc' | 'desc' = 'asc
   return [...array].sort((a, b) => {
     const aVal = a[key];
     const bVal = b[key];
-    
+
     if (aVal < bVal) return order === 'asc' ? -1 : 1;
     if (aVal > bVal) return order === 'asc' ? 1 : -1;
     return 0;
@@ -205,7 +215,7 @@ export const retry = async <T>(
   delay: number = 1000
 ): Promise<T> => {
   let lastError: Error | undefined;
-  
+
   for (let i = 0; i < maxRetries; i++) {
     try {
       return await fn();
@@ -216,7 +226,7 @@ export const retry = async <T>(
       }
     }
   }
-  
+
   throw lastError;
 };
 
@@ -232,7 +242,7 @@ export const storage = {
       return defaultValue;
     }
   },
-  
+
   set: <T>(key: string, value: T): void => {
     try {
       localStorage.setItem(key, JSON.stringify(value));
@@ -240,7 +250,7 @@ export const storage = {
       console.error('Error saving to localStorage:', error);
     }
   },
-  
+
   remove: (key: string): void => {
     try {
       localStorage.removeItem(key);
@@ -248,7 +258,7 @@ export const storage = {
       console.error('Error removing from localStorage:', error);
     }
   },
-  
+
   clear: (): void => {
     try {
       localStorage.clear();

@@ -1,9 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  X, 
   TrendingUp, 
   TrendingDown, 
-  Info, 
   AlertCircle,
   CheckCircle2,
   ShoppingCart
@@ -11,13 +9,12 @@ import {
 import { Modal } from '@components/ui/Modal';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
-import { Badge } from '@components/ui/Badge';
-import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
+
 import { useTradingStore } from '@stores/tradingStore';
 import { useWalletStore } from '@stores/walletStore';
 import { tradingApi } from '@services/api';
-import { Company, OrderType, OrderSide, PlaceOrderData } from '@types/index';
-import { formatCurrency, formatNumber } from '@utils/formatters';
+import { Company, OrderType, OrderSide, PlaceOrderData } from '../../types';
+import { formatCurrency, formatNumber } from '../../utils/formatters';
 
 // ============================================
 // Order Modal Component
@@ -287,7 +284,7 @@ export const OrderModal: React.FC<OrderModalProps> = ({
               placeholder="Enter price"
               value={limitPrice}
               onChange={(e) => setLimitPrice(e.target.value)}
-              leftIcon={<DollarSign className="w-4 h-4" />}
+              leftIcon={<span className="text-secondary-500">$</span>}
             />
             <p className="text-xs text-secondary-500 mt-1">
               Your order will execute when the market price reaches this level

@@ -1,25 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { 
-  TrendingUp, 
   DollarSign, 
   PieChart, 
-  Users,
   Calculator,
   CheckCircle2,
   AlertCircle,
   Info,
   ArrowRight,
-  ArrowLeft,
-  Building2
+  ArrowLeft
 } from 'lucide-react';
-import { Card, CardHeader, CardContent } from '@components/ui/Card';
+import { Card, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
-import { Badge } from '@components/ui/Badge';
+
 import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { useAuthStore } from '@stores/authStore';
 import { companyApi } from '@services/api';
-import { Company } from '@types/index';
+import { Company } from '../../types';
 import { formatCurrency, formatNumber } from '@utils/formatters';
 
 // ============================================

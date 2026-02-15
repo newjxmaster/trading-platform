@@ -13,11 +13,11 @@ interface WalletState {
     cryptoUsdt: number;
     cryptoBtc: number;
   };
-  
+
   // Loading states
   isLoading: boolean;
   error: string | null;
-  
+
   // Actions
   fetchBalance: () => Promise<void>;
   deposit: (data: {
@@ -57,12 +57,12 @@ export const useWalletStore = create<WalletState>((set, get) => ({
           cryptoUsdt: number;
           cryptoBtc: number;
         };
-        set({ 
-          balance: { 
-            fiat: fiat || 0, 
-            cryptoUsdt: cryptoUsdt || 0, 
-            cryptoBtc: cryptoBtc || 0 
-          } 
+        set({
+          balance: {
+            fiat: fiat || 0,
+            cryptoUsdt: cryptoUsdt || 0,
+            cryptoBtc: cryptoBtc || 0
+          }
         });
       }
     } catch (error) {
@@ -121,5 +121,9 @@ export const useWalletStore = create<WalletState>((set, get) => ({
     }
   },
 }));
+
+// Selectors
+export const selectTotalBalance = (state: WalletState) =>
+  state.balance.fiat + state.balance.cryptoUsdt + state.balance.cryptoBtc;
 
 export default useWalletStore;

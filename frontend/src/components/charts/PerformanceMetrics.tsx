@@ -1,5 +1,5 @@
 import React from 'react';
-import { TrendingUp, TrendingDown, DollarSign, Percent, Clock, Target } from 'lucide-react';
+import { TrendingUp, TrendingDown, DollarSign, Clock, Target } from 'lucide-react';
 import { Card, CardContent } from '@components/ui/Card';
 import { formatCurrency, formatPercentage } from '@utils/formatters';
 

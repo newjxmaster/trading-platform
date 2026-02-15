@@ -4,7 +4,6 @@ import {
   PieChart, 
   TrendingUp, 
   User,
-  Mail,
   Share2,
   Download,
   Search
@@ -16,8 +15,8 @@ import { Badge } from '@components/ui/Badge';
 import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { useAuthStore } from '@stores/authStore';
 import { companyApi } from '@services/api';
-import { Company, StockHolding } from '@types/index';
-import { formatCurrency, formatNumber, formatPercentage } from '@utils/formatters';
+import { Company } from '../../types';
+import { formatCurrency, formatNumber } from '../../utils/formatters';
 
 // ============================================
 // Shareholders Component
@@ -328,7 +327,7 @@ export const Shareholders: React.FC = () => {
                         {formatNumber(shareholder.shares)}
                       </td>
                       <td className="py-3 px-4 text-right">
-                        <Badge variant={index < 3 ? 'success' : 'secondary'}>
+                        <Badge variant={index < 3 ? 'success' : 'default'}>
                           {shareholder.ownershipPercent.toFixed(2)}%
                         </Badge>
                       </td>

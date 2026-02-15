@@ -3,24 +3,20 @@ import { Link } from 'react-router-dom';
 import { useTradingStore, selectPortfolioSummary } from '@stores/tradingStore';
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
-import { Badge } from '@components/ui/Badge';
-import { PageLoading, TableSkeleton } from '@components/feedback/LoadingSpinner';
+import { TableSkeleton } from '../components/feedback/LoadingSpinner';
 import { ErrorMessage, EmptyState } from '@components/feedback/ErrorMessage';
 import { 
   formatCurrency, 
   formatPercentage, 
-  formatNumber,
-  getChangeColorClass 
-} from '@utils/formatters';
+  formatNumber
+} from '../utils/formatters';
 import { cn } from '@utils/helpers';
 import { 
-  TrendingUp, 
-  TrendingDown, 
   PieChart,
   DollarSign,
   Building2,
   ArrowUpRight,
-  ArrowDownRight,
+  
   Calendar,
   Wallet,
   Activity
@@ -79,7 +75,8 @@ const StatCard: React.FC<StatCardProps> = ({
 // ============================================
 
 const HoldingsTable: React.FC = () => {
-  const { holdings } = useTradingStore();
+  const { portfolio } = useTradingStore();
+  const holdings = portfolio.holdings;
 
   if (holdings.length === 0) {
     return (
@@ -111,7 +108,7 @@ const HoldingsTable: React.FC = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-secondary-100">
-          {holdings.map((holding) => {
+          {holdings.map((holding: { id: string; companyId: string; sharesOwned: number; averageBuyPrice: number; currentValue?: number; profitLoss?: number; profitLossPercent?: number; company?: { businessName?: string; category?: string; currentPrice?: number } }) => {
             const profitLoss = holding.profitLoss || 0;
             const profitLossPercent = holding.profitLossPercent || 0;
             const isProfitable = profitLoss >= 0;
@@ -239,7 +236,8 @@ const DividendCalendar: React.FC = () => {
 // ============================================
 
 const Portfolio: React.FC = () => {
-  const { holdings, fetchPortfolio, isLoading, error } = useTradingStore();
+  const { portfolio, fetchPortfolio, isLoading, error } = useTradingStore();
+  const holdings = portfolio.holdings;
   const portfolioSummary = useTradingStore(selectPortfolioSummary);
 
   useEffect(() => {
@@ -271,7 +269,7 @@ const Portfolio: React.FC = () => {
     );
   }
 
-  const totalReturnTrend = portfolioSummary.totalReturn >= 0 ? 'up' : 'down';
+  const totalReturnTrend = portfolioSummary.totalProfitLoss >= 0 ? 'up' : 'down';
 
   return (
     <div className="space-y-6">
@@ -297,27 +295,27 @@ const Portfolio: React.FC = () => {
         <StatCard
           title="Total Value"
           value={formatCurrency(portfolioSummary.totalValue)}
-          subValue={`${portfolioSummary.holdingsCount} holdings`}
+          subValue={`${holdings.length} holdings`}
           icon={<Wallet className="w-6 h-6 text-primary-600" />}
           iconBg="bg-primary-100"
         />
         <StatCard
           title="Total Invested"
-          value={formatCurrency(portfolioSummary.totalInvested)}
+          value={formatCurrency(portfolioSummary.totalInvestment)}
           icon={<DollarSign className="w-6 h-6 text-secondary-600" />}
           iconBg="bg-secondary-100"
         />
         <StatCard
           title="Total Return"
-          value={formatCurrency(portfolioSummary.totalReturn)}
-          subValue={formatPercentage(portfolioSummary.totalReturnPercent)}
-          icon={totalReturnTrend === 'up' ? <TrendingUp className="w-6 h-6 text-success-600" /> : <TrendingDown className="w-6 h-6 text-danger-600" />}
+          value={formatCurrency(portfolioSummary.totalProfitLoss)}
+          subValue={formatPercentage(portfolioSummary.profitLossPercent)}
+          icon={totalReturnTrend === 'up' ? <Activity className="w-6 h-6 text-success-600" /> : <Activity className="w-6 h-6 text-danger-600" />}
           iconBg={totalReturnTrend === 'up' ? 'bg-success-100' : 'bg-danger-100'}
           trend={totalReturnTrend}
         />
         <StatCard
           title="Dividends Earned"
-          value={formatCurrency(portfolioSummary.totalDividends)}
+          value={formatCurrency(portfolioSummary.totalDividendsEarned)}
           icon={<Activity className="w-6 h-6 text-warning-600" />}
           iconBg="bg-warning-100"
         />

@@ -12,8 +12,8 @@ import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Badge } from '@components/ui/Badge';
-import { Transaction, Trade } from '@types/index';
-import { formatCurrency, formatDate, formatRelativeTime } from '@utils/formatters';
+import { Transaction, Trade } from '../../types';
+import { formatCurrency, formatRelativeTime } from '../../utils/formatters';
 
 // ============================================
 // Transaction List Component
@@ -51,10 +51,15 @@ export const TransactionList: React.FC<TransactionListProps> = ({
   });
 
   // Sort by date (newest first)
-  const sortedItems = filteredItems.sort((a, b) => 
-    new Date(b.createdAt || (b as Trade).executedAt).getTime() - 
-    new Date(a.createdAt || (a as Trade).executedAt).getTime()
-  );
+  const sortedItems = filteredItems.sort((a, b) => {
+    const dateA = a.itemType === 'trade' 
+      ? new Date((a as Trade).executedAt).getTime() 
+      : new Date((a as Transaction).createdAt).getTime();
+    const dateB = b.itemType === 'trade' 
+      ? new Date((b as Trade).executedAt).getTime() 
+      : new Date((b as Transaction).createdAt).getTime();
+    return dateB - dateA;
+  });
 
   // Export to CSV
   const handleExport = () => {

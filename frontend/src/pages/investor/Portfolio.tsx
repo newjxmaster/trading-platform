@@ -2,15 +2,9 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   PieChart, 
-  TrendingUp, 
-  TrendingDown, 
   ArrowRight, 
-  Calendar,
-  DollarSign,
   Building2,
-  ShoppingCart,
-  History,
-  Wallet
+  ShoppingCart
 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
@@ -23,8 +17,8 @@ import { DividendCalendar } from '@components/trading/DividendCalendar';
 import { TransactionList } from '@components/trading/TransactionList';
 import { useTradingStore } from '@stores/tradingStore';
 import { tradingApi, dividendApi } from '@services/api';
-import { StockHolding, Trade, DividendPayout } from '@types/index';
-import { formatCurrency, formatPercentage, formatNumber, getChangeColorClass } from '@utils/formatters';
+import { StockHolding, Trade, DividendPayout } from '../../types';
+import { formatCurrency, formatPercentage, formatNumber } from '../../utils/formatters';
 
 // ============================================
 // Portfolio Component
@@ -138,7 +132,7 @@ export const Portfolio: React.FC = () => {
       <PortfolioSummary />
 
       {/* Main Content */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs defaultValue="holdings" value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start">
           <TabsTrigger value="holdings">Holdings</TabsTrigger>
           <TabsTrigger value="allocation">Allocation</TabsTrigger>

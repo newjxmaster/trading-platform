@@ -14,7 +14,7 @@ import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Badge } from '@components/ui/Badge';
-import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
+
 import { Modal } from '@components/ui/Modal';
 
 // ============================================

@@ -139,21 +139,103 @@ class Logger {
     return new Logger(context);
   }
 
-  // Static methods for direct usage
-  static debug(message: string, metadata?: Record<string, unknown>): void {
-    defaultLogger.debug(message, metadata);
+  // Static methods for direct usage - flexible signatures for compatibility
+  static debug(message: string, metadata?: Record<string, unknown> | string): void {
+    const meta = typeof metadata === 'string' ? { context: metadata } : metadata;
+    defaultLogger.debug(message, meta);
   }
 
-  static info(message: string, metadata?: Record<string, unknown>): void {
-    defaultLogger.info(message, metadata);
+  static info(message: string, metadata?: Record<string, unknown> | string, extra?: Record<string, unknown>): void {
+    const meta = typeof metadata === 'string' ? { context: metadata, ...extra } : { ...metadata, ...extra };
+    defaultLogger.info(message, meta);
   }
 
-  static warn(message: string, metadata?: Record<string, unknown>): void {
-    defaultLogger.warn(message, metadata);
+  static warn(message: string, metadata?: Record<string, unknown> | string, extra?: Record<string, unknown>): void {
+    const meta = typeof metadata === 'string' ? { context: metadata, ...extra } : { ...metadata, ...extra };
+    defaultLogger.warn(message, meta);
   }
 
-  static error(message: string, error?: Error, metadata?: Record<string, unknown>): void {
-    defaultLogger.error(message, error, metadata);
+  static error(message: string, error?: Error | string, metadata?: Record<string, unknown> | string, extra?: Record<string, unknown>): void {
+    let err: Error | undefined;
+    let meta: Record<string, unknown> | undefined;
+    
+    if (error instanceof Error) {
+      err = error;
+      meta = typeof metadata === 'string' ? { context: metadata, ...extra } : { ...metadata, ...extra };
+    } else if (typeof error === 'string') {
+      err = new Error(error);
+      meta = typeof metadata === 'string' ? { context: metadata, ...extra } : { ...metadata, ...extra };
+    } else {
+      meta = { ...error as Record<string, unknown>, ...metadata as Record<string, unknown>, ...extra };
+    }
+    
+    defaultLogger.error(message, err, meta);
+  }
+
+  /**
+   * Log a payment transaction
+   */
+  static logPayment(
+    method: string,
+    amount: number,
+    status: 'success' | 'failed' | 'pending',
+    metadata?: Record<string, unknown>
+  ): void {
+    const message = `Payment ${status} - Method: ${method}, Amount: ${amount}`;
+    if (status === 'failed') {
+      defaultLogger.error(message, undefined, metadata);
+    } else {
+      defaultLogger.info(message, metadata);
+    }
+  }
+
+  /**
+   * Log a webhook event
+   */
+  static logWebhook(
+    provider: string,
+    eventType: string,
+    payload: Record<string, unknown>
+  ): void {
+    defaultLogger.info(`Webhook received from ${provider} - Event: ${eventType}`, {
+      provider,
+      eventType,
+      payload,
+    });
+  }
+
+  /**
+   * Log wallet operations
+   */
+  static logWallet(
+    userId: string,
+    operation: 'credit' | 'debit',
+    amount: number,
+    currency: string,
+    metadata?: Record<string, unknown>
+  ): void {
+    defaultLogger.info(`Wallet ${operation} - User: ${userId}, Amount: ${amount} ${currency}`, {
+      userId,
+      operation,
+      amount,
+      currency,
+      ...metadata,
+    });
+  }
+
+  /**
+   * Log transaction status changes
+   */
+  static logTransaction(
+    transactionId: string,
+    status: string,
+    metadata?: Record<string, unknown>
+  ): void {
+    defaultLogger.info(`Transaction ${transactionId} status changed to ${status}`, {
+      transactionId,
+      status,
+      ...metadata,
+    });
   }
 }
 

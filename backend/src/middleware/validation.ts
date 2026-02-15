@@ -7,7 +7,7 @@
  * @module middleware/validation
  */
 
-import { Request, Response, NextFunction } from 'express';
+import { Request, Response, NextFunction, RequestHandler } from 'express';
 import { body, param, query, validationResult, ValidationChain } from 'express-validator';
 import logger from '../utils/logger';
 
@@ -48,17 +48,23 @@ export const handleValidationErrors = (
 };
 
 /**
- * Helper to run validation chains
+ * Validation middleware that checks for validation errors
+ * Use this after validation chains in the middleware stack
+ */
+export const validate = (req: Request, res: Response, next: NextFunction): void => {
+  handleValidationErrors(req, res, next);
+};
+
+/**
+ * Helper to combine validation chains with error handling
  * @param validations - Array of validation chains
  * @returns Middleware array
  */
-export const validate = (...validations: ValidationChain[]) => {
-  return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    // Run all validations
-    await Promise.all(validations.map(validation => validation.run(req)));
-    
-    handleValidationErrors(req, res, next);
-  };
+export const validateRequest = (...validations: ValidationChain[]): RequestHandler[] => {
+  return [
+    ...validations,
+    handleValidationErrors,
+  ];
 };
 
 // ============================================

@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Building2, CheckCircle2, AlertCircle, Shield, Lock, RefreshCw, CreditCard } from 'lucide-react';
+import { CheckCircle2, Shield, Lock, RefreshCw, CreditCard, AlertCircle } from 'lucide-react';
 import { Modal } from '@components/ui/Modal';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
-import { Badge } from '@components/ui/Badge';
+
 
 // ============================================
 // Bank Connect Modal Component

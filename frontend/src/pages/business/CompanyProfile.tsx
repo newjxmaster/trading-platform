@@ -5,8 +5,6 @@ import {
   Edit2, 
   Save, 
   X, 
-  MapPin, 
-  Calendar,
   FileText,
   Image,
   CheckCircle2,
@@ -19,8 +17,8 @@ import { Badge } from '@components/ui/Badge';
 import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { useAuthStore } from '@stores/authStore';
 import { companyApi } from '@services/api';
-import { Company, BusinessType } from '@types/index';
-import { formatCurrency, formatDate, formatBusinessType } from '@utils/formatters';
+import { Company } from '../../types';
+import { formatCurrency, formatDate, formatBusinessType } from '../../utils/formatters';
 
 // ============================================
 // Company Profile Component
@@ -351,7 +349,7 @@ export const CompanyProfile: React.FC = () => {
               </div>
               <div className="flex items-center justify-between">
                 <span className="text-secondary-500">Listing Status</span>
-                <Badge variant={company.listingStatus === 'active' ? 'success' : 'secondary'}>
+                <Badge variant={company.listingStatus === 'active' ? 'success' : 'default'}>
                   {company.listingStatus}
                 </Badge>
               </div>
@@ -431,7 +429,7 @@ const DocumentCard: React.FC<DocumentCardProps> = ({ title, status, icon: Icon }
           status === 'uploaded' ? 'text-success-600' : 'text-secondary-400'
         }`} />
       </div>
-      <Badge variant={status === 'uploaded' ? 'success' : 'secondary'}>
+      <Badge variant={status === 'uploaded' ? 'success' : 'default'}>
         {status}
       </Badge>
     </div>

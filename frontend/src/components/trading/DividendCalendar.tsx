@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { Calendar, DollarSign, Clock, CheckCircle2, AlertCircle } from 'lucide-react';
+import { Calendar, Clock, CheckCircle2 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
-import { Badge } from '@components/ui/Badge';
+
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/Tabs';
-import { DividendPayout } from '@types/index';
+import { DividendPayout } from '../../types';
 import { formatCurrency, formatDate, formatRelativeTime } from '@utils/formatters';
 
 // ============================================
@@ -48,7 +48,7 @@ export const DividendCalendar: React.FC<DividendCalendarProps> = ({ payouts }) =
         subtitle="Track your dividend payments"
       />
       <CardContent>
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
+        <Tabs defaultValue="upcoming" value={activeTab} onValueChange={setActiveTab}>
           <TabsList className="w-full">
             <TabsTrigger value="upcoming">
               Upcoming

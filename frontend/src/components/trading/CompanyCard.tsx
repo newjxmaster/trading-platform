@@ -2,7 +2,7 @@ import React from 'react';
 import { Building2, TrendingUp, TrendingDown, Users, DollarSign } from 'lucide-react';
 import { Card, CardContent } from '@components/ui/Card';
 import { Badge } from '@components/ui/Badge';
-import { Company } from '@types/index';
+import { Company } from '../../types';
 import { formatCurrency, formatPercentage, formatNumber, formatBusinessType } from '@utils/formatters';
 
 // ============================================
@@ -18,8 +18,9 @@ interface CompanyCardProps {
 export const CompanyCard: React.FC<CompanyCardProps> = ({ 
   company, 
   onClick,
-  showActions = false 
+  showActions: _showActions = false 
 }) => {
+  void _showActions; // Unused but kept for API compatibility
   const isPriceUp = (company.priceChangePercent || 0) >= 0;
   const marketCap = company.currentPrice * company.totalShares;
   const publicOffering = ((company.totalShares - company.availableShares) / company.totalShares) * 100;

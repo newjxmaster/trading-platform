@@ -1,6 +1,6 @@
 import { useEffect, useRef, useCallback, useState } from 'react';
 import { io, Socket } from 'socket.io-client';
-import { WebSocketEvents } from '@types/index';
+import { PriceUpdatePayload, OrderMatchedPayload, NewTradePayload, DividendDistributedPayload } from '../types';
 
 // ============================================
 // Socket Configuration
@@ -80,7 +80,7 @@ export const useSocket = () => {
   // Event Subscription Methods
   // ============================================
 
-  const subscribeToPriceUpdates = useCallback((callback: (data: WebSocketEvents['price_update']) => void) => {
+  const subscribeToPriceUpdates = useCallback((callback: (data: PriceUpdatePayload) => void) => {
     const socket = socketRef.current;
     if (!socket) return;
 
@@ -91,7 +91,7 @@ export const useSocket = () => {
     };
   }, []);
 
-  const subscribeToOrderMatches = useCallback((callback: (data: WebSocketEvents['order_matched']) => void) => {
+  const subscribeToOrderMatches = useCallback((callback: (data: OrderMatchedPayload) => void) => {
     const socket = socketRef.current;
     if (!socket) return;
 
@@ -102,7 +102,7 @@ export const useSocket = () => {
     };
   }, []);
 
-  const subscribeToNewTrades = useCallback((callback: (data: WebSocketEvents['new_trade']) => void) => {
+  const subscribeToNewTrades = useCallback((callback: (data: NewTradePayload) => void) => {
     const socket = socketRef.current;
     if (!socket) return;
 
@@ -113,7 +113,7 @@ export const useSocket = () => {
     };
   }, []);
 
-  const subscribeToDividends = useCallback((callback: (data: WebSocketEvents['dividend_distributed']) => void) => {
+  const subscribeToDividends = useCallback((callback: (data: DividendDistributedPayload) => void) => {
     const socket = socketRef.current;
     if (!socket) return;
 

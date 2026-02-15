@@ -2,17 +2,16 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { 
   Building2, 
-  MapPin, 
-  FileText, 
   ArrowRight,
   ArrowLeft,
-  Calendar,
-  AlertCircle
+  AlertCircle,
+  CheckCircle2,
+  Calendar
 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
-import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
+
 
 // ============================================
 // Step 2: Business Information Component

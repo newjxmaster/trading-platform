@@ -1,27 +1,23 @@
 import React, { useEffect, useState } from 'react';
 import { 
-  Users, 
   Search, 
-  Filter,
   CheckCircle2,
   XCircle,
   Eye,
-  Mail,
-  Phone,
-  Shield,
   User,
   AlertCircle,
-  MoreVertical
+  Mail,
+  Phone
 } from 'lucide-react';
-import { Card, CardHeader, CardContent } from '@components/ui/Card';
+import { Card, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Badge } from '@components/ui/Badge';
 import { Modal } from '@components/ui/Modal';
 import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { adminApi } from '@services/api';
-import { User as UserType, KycStatus, UserRole } from '@types/index';
-import { formatDate, formatPhoneNumber } from '@utils/formatters';
+import { User as UserType, KycStatus, UserRole } from '../../types';
+import { formatDate, formatPhoneNumber } from '../../utils/formatters';
 
 // ============================================
 // User Management Component
@@ -366,14 +362,7 @@ export const UserManagement: React.FC = () => {
 // Stat Card Component
 // ============================================
 
-const StatCard: React.FC<{ title: string; value: number; color: string }> = ({ title, value, color }) => {
-  const colorClasses: Record<string, string> = {
-    primary: 'bg-primary-100 text-primary-600',
-    success: 'bg-success-100 text-success-600',
-    warning: 'bg-warning-100 text-warning-600',
-    secondary: 'bg-secondary-100 text-secondary-600',
-  };
-
+const StatCard: React.FC<{ title: string; value: number; color: string }> = ({ title, value }) => {
   return (
     <Card>
       <CardContent className="p-4">

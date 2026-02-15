@@ -1,44 +1,41 @@
 import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
-import { useCompanyStore, selectFilteredCompanies } from '@stores/companyStore';
-import { useTradingStore } from '@stores/tradingStore';
-import { Card, CardHeader, CardContent } from '@components/ui/Card';
-import { Button } from '@components/ui/Button';
-import { Input } from '@components/ui/Input';
-import { Select } from '@components/ui/Select';
-import { Badge } from '@components/ui/Badge';
-import { Modal } from '@components/ui/Modal';
-import { PageLoading, CardSkeleton } from '@components/feedback/LoadingSpinner';
-import { ErrorMessage, EmptyState } from '@components/feedback/ErrorMessage';
+import { useCompanyStore } from '../stores/companyStore';
+import { useTradingStore } from '../stores/tradingStore';
+import { Card, CardContent } from '../components/ui/Card';
+import { Button } from '../components/ui/Button';
+import { Input } from '../components/ui/Input';
+import { Badge } from '../components/ui/Badge';
+import { Modal } from '../components/ui/Modal';
+import { CardSkeleton } from '../components/feedback/LoadingSpinner';
+import { ErrorMessage, EmptyState } from '../components/feedback/ErrorMessage';
 import { 
   formatCurrency, 
   formatPercentage, 
   formatNumber,
   getChangeColorClass,
   formatBusinessType 
-} from '@utils/formatters';
-import { cn } from '@utils/helpers';
-import { useDebounce } from '@hooks/useDebounce';
+} from '../utils/formatters';
+import { cn } from '../utils/helpers';
+import { useDebounce } from '../hooks/useDebounce';
 import { 
   Search, 
   Filter, 
-  TrendingUp, 
-  TrendingDown, 
   Building2,
   ArrowUpRight,
   DollarSign,
-  BarChart3,
-  X
+  BarChart3
 } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { Company } from '../types';
 
 // ============================================
 // Company Card Component
 // ============================================
 
 interface CompanyCardProps {
-  company: ReturnType<typeof selectFilteredCompanies>[0];
-  onBuy: (company: typeof company) => void;
+  company: Company;
+  onBuy: (company: Company) => void;
 }
 
 const CompanyCard: React.FC<CompanyCardProps> = ({ company, onBuy }) => {
@@ -75,11 +72,6 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ company, onBuy }) => {
               {formatCurrency(company.currentPrice)}
             </span>
             <span className={cn('flex items-center text-sm font-medium', getChangeColorClass(priceChange))}>
-              {isPositive ? (
-                <TrendingUp className="w-4 h-4 mr-0.5" />
-              ) : (
-                <TrendingDown className="w-4 h-4 mr-0.5" />
-              )}
               {isPositive ? '+' : ''}{priceChange.toFixed(2)}%
             </span>
           </div>
@@ -105,13 +97,13 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ company, onBuy }) => {
           <div>
             <p className="text-xs text-secondary-500 mb-0.5">Valuation</p>
             <p className="text-sm font-medium text-secondary-900">
-              {formatCompactCurrency(company.initialValuation)}
+              {formatCurrency(company.initialValuation)}
             </p>
           </div>
           <div>
             <p className="text-xs text-secondary-500 mb-0.5">Category</p>
             <p className="text-sm font-medium text-secondary-900 capitalize">
-              {company.category}
+              {company.category || '-'}
             </p>
           </div>
         </div>
@@ -144,7 +136,7 @@ const CompanyCard: React.FC<CompanyCardProps> = ({ company, onBuy }) => {
 interface BuyModalProps {
   isOpen: boolean;
   onClose: () => void;
-  company: ReturnType<typeof selectFilteredCompanies>[0] | null;
+  company: Company | null;
 }
 
 const BuyModal: React.FC<BuyModalProps> = ({ isOpen, onClose, company }) => {
@@ -331,16 +323,21 @@ const Marketplace: React.FC = () => {
     companies, 
     isLoading, 
     error, 
-    filters, 
-    setFilters, 
-    clearFilters,
     fetchCompanies,
-    pagination 
   } = useCompanyStore();
+  
+  // Local state for filters
+  const [filters, setFilters] = useState({
+    category: '',
+    sortBy: 'newest',
+    sortOrder: 'desc' as 'asc' | 'desc',
+  });
+  const clearFilters = () => setFilters({ category: '', sortBy: 'newest', sortOrder: 'desc' });
+  const pagination = { page: 1, totalPages: 1, total: companies.length };
   
   const [searchQuery, setSearchQuery] = useState('');
   const [showFilters, setShowFilters] = useState(false);
-  const [selectedCompany, setSelectedCompany] = useState<typeof companies[0] | null>(null);
+  const [selectedCompany, setSelectedCompany] = useState<Company | null>(null);
   const [isBuyModalOpen, setIsBuyModalOpen] = useState(false);
 
   const debouncedSearch = useDebounce(searchQuery, 300);
@@ -351,17 +348,16 @@ const Marketplace: React.FC = () => {
 
   const handleSearch = (value: string) => {
     setSearchQuery(value);
-    // In a real app, you'd filter by search query
   };
 
-  const handleBuy = (company: typeof companies[0]) => {
+  const handleBuy = (company: Company) => {
     setSelectedCompany(company);
     setIsBuyModalOpen(true);
   };
 
   const filteredCompanies = companies.filter(company =>
     company.businessName.toLowerCase().includes(debouncedSearch.toLowerCase()) ||
-    company.category.toLowerCase().includes(debouncedSearch.toLowerCase())
+    (company.category?.toLowerCase() || '').includes(debouncedSearch.toLowerCase())
   );
 
   if (isLoading && companies.length === 0) {
@@ -431,21 +427,27 @@ const Marketplace: React.FC = () => {
       {showFilters && (
         <div className="bg-white rounded-xl border border-secondary-200 p-4 animate-slide-down">
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <Select
-              label="Category"
-              options={categoryOptions}
-              value={filters.category || ''}
-              onChange={(e) => setFilters({ category: e.target.value || undefined })}
-            />
-            <Select
-              label="Sort By"
-              options={sortOptions}
+            <select
+              className="px-4 py-2.5 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+              value={filters.category}
+              onChange={(e) => setFilters({ ...filters, category: e.target.value })}
+            >
+              {categoryOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
+            <select
+              className="px-4 py-2.5 border border-secondary-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
               value={`${filters.sortBy}_${filters.sortOrder}`}
               onChange={(e) => {
                 const [sortBy, sortOrder] = e.target.value.split('_');
-                setFilters({ sortBy: sortBy as any, sortOrder: sortOrder as any });
+                setFilters({ ...filters, sortBy, sortOrder: sortOrder as 'asc' | 'desc' });
               }}
-            />
+            >
+              {sortOptions.map(opt => (
+                <option key={opt.value} value={opt.value}>{opt.label}</option>
+              ))}
+            </select>
             <div className="flex items-end">
               <Button variant="ghost" onClick={clearFilters} className="w-full">
                 Clear Filters
@@ -513,8 +515,5 @@ const Marketplace: React.FC = () => {
     </div>
   );
 };
-
-// Need to import formatCompactCurrency
-import { formatCompactCurrency } from '@utils/formatters';
 
 export default Marketplace;

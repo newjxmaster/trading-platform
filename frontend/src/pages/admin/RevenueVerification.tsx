@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { 
-  DollarSign, 
   CheckCircle2, 
   XCircle, 
   Eye,
@@ -12,15 +11,15 @@ import {
   AlertCircle,
   Building2
 } from 'lucide-react';
-import { Card, CardHeader, CardContent } from '@components/ui/Card';
+import { Card, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Input } from '@components/ui/Input';
 import { Badge } from '@components/ui/Badge';
 import { Modal } from '@components/ui/Modal';
 import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { adminApi } from '@services/api';
-import { RevenueReport, Company } from '@types/index';
-import { formatCurrency, formatNumber, formatDate } from '@utils/formatters';
+import { RevenueReport, Company } from '../../types';
+import { formatCurrency } from '../../utils/formatters';
 
 // ============================================
 // Revenue Verification Component

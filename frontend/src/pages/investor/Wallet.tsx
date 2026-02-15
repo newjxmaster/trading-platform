@@ -8,7 +8,6 @@ import {
   Smartphone,
   Building2,
   Bitcoin,
-  History,
   Copy,
   Check,
   AlertCircle
@@ -19,13 +18,13 @@ import { Input } from '@components/ui/Input';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/Tabs';
 import { Modal } from '@components/ui/Modal';
 import { Badge } from '@components/ui/Badge';
-import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
+
 import { TransactionList } from '@components/trading/TransactionList';
 import { useWalletStore } from '@stores/walletStore';
-import { useAuthStore } from '@stores/authStore';
+
 import { paymentApi } from '@services/api';
-import { Transaction, PaymentMethod } from '@types/index';
-import { formatCurrency, formatCrypto, formatDate } from '@utils/formatters';
+import { Transaction, PaymentMethod } from '../../types';
+import { formatCurrency, formatCrypto } from '../../utils/formatters';
 import { copyToClipboard } from '@utils/helpers';
 
 // ============================================
@@ -49,7 +48,7 @@ const CRYPTO_OPTIONS = [
 
 export const WalletPage: React.FC = () => {
   const location = useLocation();
-  const { user } = useAuthStore();
+  
   const { balance, fetchBalance } = useWalletStore();
   
   const [activeTab, setActiveTab] = useState('overview');
@@ -65,7 +64,7 @@ export const WalletPage: React.FC = () => {
   const [copiedAddress, setCopiedAddress] = useState(false);
   
   // Withdrawal state
-  const [showWithdrawModal, setShowWithdrawModal] = useState(false);
+  const [_showWithdrawModal, setShowWithdrawModal] = useState(false);
   const [withdrawAmount, setWithdrawAmount] = useState('');
   const [withdrawMethod, setWithdrawMethod] = useState<PaymentMethod>('bank_transfer');
   const [withdrawAccount, setWithdrawAccount] = useState('');
@@ -257,7 +256,7 @@ export const WalletPage: React.FC = () => {
       </div>
 
       {/* Main Content */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="deposit">Deposit</TabsTrigger>

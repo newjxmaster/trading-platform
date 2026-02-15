@@ -5,9 +5,8 @@ import {
   Cell,
   ResponsiveContainer,
   Tooltip,
-  Legend,
 } from 'recharts';
-import { StockHolding } from '@types/index';
+import { StockHolding } from '../../types';
 import { formatCurrency, formatPercentage } from '@utils/formatters';
 
 // ============================================
@@ -113,7 +112,7 @@ export const PortfolioChart: React.FC<PortfolioChartProps> = ({
               paddingAngle={2}
               dataKey="value"
             >
-              {chartData.map((entry, index) => (
+              {chartData.map((_entry, index) => (
                 <Cell 
                   key={`cell-${index}`} 
                   fill={COLORS[index % COLORS.length]} 

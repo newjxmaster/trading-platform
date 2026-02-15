@@ -18,7 +18,7 @@ const prisma = new PrismaClient();
 
 export interface AuthenticatedRequest extends Request {
   user?: {
-    id: string;
+    userId: string;
     email: string;
     role: UserRole;
     full_name: string;
@@ -73,8 +73,14 @@ export const authenticate = async (
       return;
     }
 
-    // Attach user to request
-    req.user = user;
+    // Attach user to request with userId
+    req.user = {
+      userId: user.id,
+      email: user.email,
+      role: user.role,
+      full_name: user.full_name,
+    };
+
     next();
   } catch (error) {
     if (error instanceof jwt.TokenExpiredError) {
@@ -101,6 +107,11 @@ export const authenticate = async (
     });
   }
 };
+
+/**
+ * Alias for authenticate - used in some imports
+ */
+export const authenticateToken = authenticate;
 
 /**
  * Optional authentication - attaches user if token is valid, but doesn't require it
@@ -132,7 +143,12 @@ export const optionalAuth = async (
     });
 
     if (user) {
-      req.user = user;
+      req.user = {
+        userId: user.id,
+        email: user.email,
+        role: user.role,
+        full_name: user.full_name,
+      };
     }
 
     next();
@@ -289,7 +305,7 @@ export const requireCompanyOwnerOrAdmin = async (
       return;
     }
 
-    if (company.owner_id !== req.user.id) {
+    if (company.owner_id !== req.user.userId) {
       res.status(403).json({
         success: false,
         error: 'Not authorized to access this company',

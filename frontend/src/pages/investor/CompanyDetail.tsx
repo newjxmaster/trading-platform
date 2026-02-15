@@ -8,8 +8,6 @@ import {
   TrendingUp, 
   TrendingDown,
   Users,
-  DollarSign,
-  PieChart,
   FileText,
   ShoppingCart,
   Share2,
@@ -28,8 +26,8 @@ import { OrderModal } from './OrderModal';
 import { useSocket } from '@hooks/useSocket';
 import { useAuthStore } from '@stores/authStore';
 import { companyApi, tradingApi } from '@services/api';
-import { Company, OrderBook as OrderBookType, PriceHistory, RevenueReport } from '@types/index';
-import { formatCurrency, formatPercentage, formatDate, formatNumber, getChangeColorClass, formatBusinessType } from '@utils/formatters';
+import { Company, OrderBook as OrderBookType, PriceHistory, RevenueReport } from '../../types';
+import { formatCurrency, formatPercentage, formatDate, formatNumber, formatBusinessType } from '../../utils/formatters';
 
 // ============================================
 // Company Detail Component
@@ -38,7 +36,7 @@ import { formatCurrency, formatPercentage, formatDate, formatNumber, getChangeCo
 export const CompanyDetail: React.FC = () => {
   const { companyId } = useParams<{ companyId: string }>();
   const navigate = useNavigate();
-  const { user } = useAuthStore();
+  const { user: _user } = useAuthStore();
   const { joinCompanyRoom, leaveCompanyRoom, subscribeToPriceUpdates } = useSocket();
   
   // ============================================
@@ -121,7 +119,7 @@ export const CompanyDetail: React.FC = () => {
       if (data.companyId === companyId && company) {
         setCompany({
           ...company,
-          currentPrice: data.newPrice,
+          currentPrice: data.price,
           priceChange: data.change,
           priceChangePercent: data.changePercent,
         });
@@ -306,7 +304,7 @@ export const CompanyDetail: React.FC = () => {
       </Card>
 
       {/* Main Content */}
-      <Tabs value={activeTab} onValueChange={setActiveTab}>
+      <Tabs defaultValue="overview" value={activeTab} onValueChange={setActiveTab}>
         <TabsList className="w-full justify-start">
           <TabsTrigger value="overview">Overview</TabsTrigger>
           <TabsTrigger value="financials">Financials</TabsTrigger>

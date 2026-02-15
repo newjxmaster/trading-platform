@@ -4,21 +4,13 @@ import {
   Users, 
   Building2, 
   DollarSign,
-  BarChart3,
-  PieChart,
-  Activity,
-  Calendar,
-  Download,
-  Filter
+  Download
 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
 import { Badge } from '@components/ui/Badge';
 import { Tabs, TabsList, TabsTrigger, TabsContent } from '@components/ui/Tabs';
-import { StockPriceChart } from '@components/charts/StockPriceChart';
-import { RevenueChart } from '@components/charts/RevenueChart';
-import { PortfolioChart } from '@components/charts/PortfolioChart';
-import { formatCurrency, formatNumber, formatCompactNumber } from '@utils/formatters';
+import { formatCurrency, formatNumber } from '../../utils/formatters';
 
 // ============================================
 // Analytics Component
@@ -119,14 +111,14 @@ export const Analytics: React.FC = () => {
         />
         <MetricCard
           title="Trading Volume"
-          value={formatCompactCurrency(platformStats.totalTradingVolume)}
+          value={formatCurrency(platformStats.totalTradingVolume)}
           change={+23.7}
           icon={TrendingUp}
           color="warning"
         />
         <MetricCard
           title="Dividends Paid"
-          value={formatCompactCurrency(platformStats.totalDividendsDistributed)}
+          value={formatCurrency(platformStats.totalDividendsDistributed)}
           change={+15.2}
           icon={DollarSign}
           color="secondary"

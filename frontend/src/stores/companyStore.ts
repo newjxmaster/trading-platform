@@ -23,7 +23,7 @@ interface CompanyState {
   clearSelectedCompany: () => void;
 }
 
-export const useCompanyStore = create<CompanyState>((set, get) => ({
+export const useCompanyStore = create<CompanyState>((set) => ({
   // Initial state
   companies: [],
   selectedCompany: null,

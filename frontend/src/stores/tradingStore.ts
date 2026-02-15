@@ -12,14 +12,14 @@ interface TradingState {
     holdings: StockHolding[];
     summary: PortfolioSummary;
   };
-  
+
   // Order Book
   orderBook: OrderBook | null;
-  
+
   // Loading states
   isLoading: boolean;
   error: string | null;
-  
+
   // Actions
   fetchPortfolio: () => Promise<void>;
   fetchOrderBook: (companyId: string) => Promise<void>;
@@ -52,11 +52,11 @@ export const useTradingStore = create<TradingState>((set, get) => ({
       const response = await tradingApi.getPortfolio();
       if (response.data.success && response.data.data) {
         const { holdings, summary } = response.data.data as { holdings: StockHolding[]; summary: PortfolioSummary };
-        set({ 
-          portfolio: { 
-            holdings: holdings || [], 
-            summary: summary || initialPortfolioSummary 
-          } 
+        set({
+          portfolio: {
+            holdings: holdings || [],
+            summary: summary || initialPortfolioSummary
+          }
         });
       }
     } catch (error) {
@@ -115,5 +115,8 @@ export const useTradingStore = create<TradingState>((set, get) => ({
     }
   },
 }));
+
+// Selectors
+export const selectPortfolioSummary = (state: TradingState) => state.portfolio.summary;
 
 export default useTradingStore;

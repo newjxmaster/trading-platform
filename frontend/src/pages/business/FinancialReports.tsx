@@ -2,14 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { 
   FileText, 
   TrendingUp, 
-  TrendingDown, 
   Calendar, 
   RefreshCw,
   CheckCircle2,
   AlertCircle,
   Clock,
   DollarSign,
-  Building2
+  Building2,
+  X
 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
@@ -18,8 +18,8 @@ import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { RevenueChart } from '@components/charts/RevenueChart';
 import { useAuthStore } from '@stores/authStore';
 import { companyApi, revenueApi } from '@services/api';
-import { Company, RevenueReport, RevenueVerificationStatus } from '@types/index';
-import { formatCurrency, formatDate, formatNumber, getStatusColorClass } from '@utils/formatters';
+import { Company, RevenueReport, RevenueVerificationStatus } from '../../types';
+import { formatCurrency } from '../../utils/formatters';
 
 // ============================================
 // Financial Reports Component

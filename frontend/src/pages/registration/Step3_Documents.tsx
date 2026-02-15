@@ -13,8 +13,7 @@ import {
 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
-import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
-import { KYCUpload } from '@components/forms/KYCUpload';
+
 
 // ============================================
 // Step 3: Document Upload Component

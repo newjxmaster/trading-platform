@@ -10,9 +10,9 @@ import {
   Activity,
   DollarSign
 } from 'lucide-react';
-import { Card, CardHeader, CardContent, CardFooter } from '@components/ui/Card';
+import { Card, CardHeader, CardContent } from '@components/ui/Card';
 import { Button } from '@components/ui/Button';
-import { Badge } from '@components/ui/Badge';
+
 import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { PortfolioSummary } from '@components/trading/PortfolioSummary';
 import { useAuthStore } from '@stores/authStore';
@@ -20,7 +20,7 @@ import { useTradingStore } from '@stores/tradingStore';
 import { useWalletStore } from '@stores/walletStore';
 import { tradingApi, dividendApi } from '@services/api';
 import { formatCurrency, formatPercentage, formatRelativeTime } from '@utils/formatters';
-import { StockHolding, DividendPayout, Trade } from '@types/index';
+import { StockHolding, DividendPayout, Trade } from '../../types';
 
 // ============================================
 // Investor Dashboard Component

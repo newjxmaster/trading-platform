@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { 
   TrendingUp, 
   TrendingDown, 
-  Calendar, 
   Activity,
   BarChart3,
   Clock,
@@ -10,14 +9,13 @@ import {
   ArrowDownRight
 } from 'lucide-react';
 import { Card, CardHeader, CardContent } from '@components/ui/Card';
-import { Button } from '@components/ui/Button';
-import { Badge } from '@components/ui/Badge';
+
 import { LoadingSpinner } from '@components/feedback/LoadingSpinner';
 import { StockPriceChart } from '@components/charts/StockPriceChart';
 import { useAuthStore } from '@stores/authStore';
 import { companyApi, tradingApi } from '@services/api';
-import { Company, PriceHistory, Trade } from '@types/index';
-import { formatCurrency, formatNumber, formatPercentage, formatDate } from '@utils/formatters';
+import { Company, PriceHistory, Trade } from '../../types';
+import { formatCurrency, formatNumber, formatPercentage, formatDate } from '../../utils/formatters';
 
 // ============================================
 // Stock Performance Component

@@ -162,7 +162,8 @@ const RecentActivity: React.FC = () => {
 // ============================================
 
 const TopHoldings: React.FC = () => {
-  const { holdings, fetchPortfolio } = useTradingStore();
+  const { portfolio, fetchPortfolio } = useTradingStore();
+  const holdings = portfolio.holdings;
 
   useEffect(() => {
     fetchPortfolio();
@@ -223,10 +224,10 @@ const TopHoldings: React.FC = () => {
                 </p>
                 <p className={cn(
                   'text-xs',
-                  getChangeColorClass(holding.profitLossPercent)
+                  getChangeColorClass(holding.profitLossPercent ?? 0)
                 )}>
                   {holding.profitLossPercent && holding.profitLossPercent >= 0 ? '+' : ''}
-                  {formatPercentage(holding.profitLossPercent)}
+                  {formatPercentage(holding.profitLossPercent ?? 0)}
                 </p>
               </div>
             </div>
@@ -244,7 +245,7 @@ const TopHoldings: React.FC = () => {
 const Dashboard: React.FC = () => {
   const { user, isInvestor } = useAuth();
   const { fetchPortfolio, isLoading: portfolioLoading } = useTradingStore();
-  const { fetchWallet, isLoading: walletLoading } = useWalletStore();
+  const { fetchBalance: fetchWallet, isLoading: walletLoading } = useWalletStore();
   const portfolioSummary = useTradingStore(selectPortfolioSummary);
   const totalBalance = useWalletStore(selectTotalBalance);
 
@@ -293,7 +294,7 @@ const Dashboard: React.FC = () => {
           <StatCard
             title="Portfolio Value"
             value={formatCurrency(portfolioSummary.totalValue)}
-            change={portfolioSummary.totalReturnPercent}
+            change={portfolioSummary.profitLossPercent}
             changeLabel="all time"
             icon={<PieChart className="w-6 h-6 text-primary-600" />}
             iconBg="bg-primary-100"
@@ -311,8 +312,8 @@ const Dashboard: React.FC = () => {
           <>
             <StatCard
               title="Total Return"
-              value={formatCurrency(portfolioSummary.totalReturn)}
-              change={portfolioSummary.totalReturnPercent}
+              value={formatCurrency(portfolioSummary.totalProfitLoss)}
+              change={portfolioSummary.profitLossPercent}
               changeLabel="all time"
               icon={<Activity className="w-6 h-6 text-warning-600" />}
               iconBg="bg-warning-100"
@@ -320,7 +321,7 @@ const Dashboard: React.FC = () => {
             />
             <StatCard
               title="Dividends Earned"
-              value={formatCurrency(portfolioSummary.totalDividends)}
+              value={formatCurrency(portfolioSummary.totalDividendsEarned)}
               icon={<DollarSign className="w-6 h-6 text-info-600" />}
               iconBg="bg-blue-100"
               href="/portfolio/dividends"
@@ -411,6 +412,6 @@ const Dashboard: React.FC = () => {
 };
 
 // Need to import cn for the component
-import { cn } from '@utils/helpers';
+import { cn } from '../utils/helpers';
 
 export default Dashboard;
