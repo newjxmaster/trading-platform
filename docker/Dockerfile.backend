@@ -1,5 +1,6 @@
 # Trading Platform - Backend Dockerfile
 # Node.js 20+ production image for API server
+# Build context: project root
 
 FROM node:20-alpine AS base
 
@@ -9,9 +10,9 @@ RUN apk add --no-cache libc6-compat openssl
 # Set working directory
 WORKDIR /app
 
-# Copy package files
-COPY package*.json ./
-COPY prisma ./prisma/
+# Copy backend package files
+COPY backend/package*.json ./
+COPY backend/prisma ./prisma/
 
 # Install all dependencies (including devDependencies for build)
 RUN npm install && npm cache clean --force
@@ -19,8 +20,8 @@ RUN npm install && npm cache clean --force
 # Generate Prisma client
 RUN npx prisma generate
 
-# Copy source code
-COPY . .
+# Copy backend source code
+COPY backend/ .
 
 # Build the application (ignore TypeScript errors for now)
 RUN npm run build || true
@@ -43,8 +44,8 @@ RUN addgroup -g 1001 -S nodejs && \
 WORKDIR /app
 
 # Copy package files
-COPY package*.json ./
-COPY prisma ./prisma/
+COPY backend/package*.json ./
+COPY backend/prisma ./prisma/
 
 # Install production dependencies only
 RUN npm install --only=production && npm cache clean --force
