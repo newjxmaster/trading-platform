@@ -13,11 +13,11 @@ async function seedAdmin() {
     // Admin credentials from deployment config
     const adminData = {
       email: 'admin@trademe.com',
-      fullName: 'Napole Weng',
+      full_name: 'Napole Weng',
       password: 'SuperSecure123!',
       phone: '+2250789070000',
       role: 'admin',
-      kycStatus: 'verified', // Auto-verify admin
+      kyc_status: 'verified', // Auto-verify admin
     };
 
     // Check if admin already exists
@@ -33,27 +33,27 @@ async function seedAdmin() {
 
     // Hash password
     const SALT_ROUNDS = 12;
-    const passwordHash = await bcrypt.hash(adminData.password, SALT_ROUNDS);
+    const password_hash = await bcrypt.hash(adminData.password, SALT_ROUNDS);
 
     // Create admin user
     const admin = await prisma.users.create({
       data: {
         email: adminData.email,
-        fullName: adminData.fullName,
+        full_name: adminData.full_name,
         phone: adminData.phone,
-        passwordHash: passwordHash,
+        password_hash: password_hash,
         role: adminData.role,
-        kycStatus: adminData.kycStatus,
-        walletFiat: 0,
-        walletCryptoUsdt: 0,
-        walletCryptoBtc: 0,
+        kyc_status: adminData.kyc_status,
+        wallet_fiat: 0,
+        wallet_crypto_usdt: 0,
+        wallet_crypto_btc: 0,
       },
       select: {
         id: true,
         email: true,
-        fullName: true,
+        full_name: true,
         role: true,
-        createdAt: true,
+        created_at: true,
       },
     });
 
@@ -62,9 +62,9 @@ async function seedAdmin() {
     console.log('Admin Details:');
     console.log('  ID:', admin.id);
     console.log('  Email:', admin.email);
-    console.log('  Name:', admin.fullName);
+    console.log('  Name:', admin.full_name);
     console.log('  Role:', admin.role);
-    console.log('  Created:', admin.createdAt);
+    console.log('  Created:', admin.created_at);
     console.log('');
     console.log('Login Credentials:');
     console.log('  Email: admin@trademe.com');
