@@ -16,6 +16,13 @@ const Dashboard = lazy(() => import('@pages/Dashboard'));
 const Marketplace = lazy(() => import('@pages/Marketplace'));
 const Portfolio = lazy(() => import('@pages/Portfolio'));
 
+// Admin Pages
+const AdminDashboard = lazy(() => import('@pages/admin/AdminDashboard'));
+const CompanyApprovals = lazy(() => import('@pages/admin/CompanyApprovals'));
+const UserManagement = lazy(() => import('@pages/admin/UserManagement'));
+const RevenueVerification = lazy(() => import('@pages/admin/RevenueVerification'));
+const Analytics = lazy(() => import('@pages/admin/Analytics'));
+
 // ============================================
 // React Query Client
 // ============================================
@@ -212,10 +219,7 @@ const AppRoutes: React.FC = () => {
           index
           element={
             <Suspense fallback={<PageLoading />}>
-              <div className="p-8 text-center">
-                <h1 className="text-2xl font-bold text-secondary-900 mb-4">Admin Dashboard</h1>
-                <p className="text-secondary-600">Coming soon...</p>
-              </div>
+              <AdminDashboard />
             </Suspense>
           }
         />
@@ -223,10 +227,7 @@ const AppRoutes: React.FC = () => {
           path="companies"
           element={
             <Suspense fallback={<PageLoading />}>
-              <div className="p-8 text-center">
-                <h1 className="text-2xl font-bold text-secondary-900 mb-4">Company Approvals</h1>
-                <p className="text-secondary-600">Coming soon...</p>
-              </div>
+              <CompanyApprovals />
             </Suspense>
           }
         />
@@ -234,10 +235,7 @@ const AppRoutes: React.FC = () => {
           path="users"
           element={
             <Suspense fallback={<PageLoading />}>
-              <div className="p-8 text-center">
-                <h1 className="text-2xl font-bold text-secondary-900 mb-4">User Management</h1>
-                <p className="text-secondary-600">Coming soon...</p>
-              </div>
+              <UserManagement />
             </Suspense>
           }
         />
@@ -245,10 +243,15 @@ const AppRoutes: React.FC = () => {
           path="revenue"
           element={
             <Suspense fallback={<PageLoading />}>
-              <div className="p-8 text-center">
-                <h1 className="text-2xl font-bold text-secondary-900 mb-4">Revenue Reports</h1>
-                <p className="text-secondary-600">Coming soon...</p>
-              </div>
+              <RevenueVerification />
+            </Suspense>
+          }
+        />
+        <Route
+          path="analytics"
+          element={
+            <Suspense fallback={<PageLoading />}>
+              <Analytics />
             </Suspense>
           }
         />
