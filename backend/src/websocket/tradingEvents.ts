@@ -424,12 +424,12 @@ async function sendInitialMarketData(socket: Socket): Promise<void> {
   try {
     const companies = await prisma.company.findMany({
       where: {
-        listingStatus: { in: ['active', 'ipo'] }
+        listing_status: { in: ['active', 'ipo'] }
       },
       select: {
         id: true,
-        businessName: true,
-        currentPrice: true,
+        business_name: true,
+        current_price: true,
         category: true
       },
       take: 50
@@ -438,8 +438,8 @@ async function sendInitialMarketData(socket: Socket): Promise<void> {
     socket.emit('market_data', {
       companies: companies.map(c => ({
         companyId: c.id,
-        companyName: c.businessName,
-        currentPrice: c.currentPrice,
+        companyName: c.business_name,
+        currentPrice: c.current_price,
         category: c.category
       })),
       timestamp: new Date()
@@ -467,7 +467,7 @@ async function buildOrderBook(companyId: string): Promise<{
 }> {
   const [buyOrders, sellOrders] = await Promise.all([
     // Get aggregated buy orders
-    prisma.order.groupBy({
+    prisma.orders.groupBy({
       by: ['price'],
       where: {
         companyId,
@@ -481,7 +481,7 @@ async function buildOrderBook(companyId: string): Promise<{
       take: 10
     }),
     // Get aggregated sell orders
-    prisma.order.groupBy({
+    prisma.orders.groupBy({
       by: ['price'],
       where: {
         companyId,
