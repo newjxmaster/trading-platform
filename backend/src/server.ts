@@ -64,7 +64,7 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
-app.use('/api', routes);
+app.use('/', routes);
 
 // ============================================================================
 // ERROR HANDLING
