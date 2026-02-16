@@ -13,8 +13,7 @@ import dotenv from 'dotenv';
 dotenv.config();
 
 // Import routes
-import companyRoutes from './routes/companyRoutes';
-import adminRoutes from './routes/adminRoutes';
+import routes from './routes';
 
 // Import middleware
 import { handleMulterError } from './middleware/auth';
@@ -65,8 +64,7 @@ app.get('/health', (req, res) => {
 });
 
 // API Routes
-app.use('/api/companies', companyRoutes);
-app.use('/api/admin', adminRoutes);
+app.use('/api', routes);
 
 // ============================================================================
 // ERROR HANDLING
@@ -146,7 +144,11 @@ app.listen(PORT, () => {
 
 🚀 Server running on port ${PORT}
 📚 API Documentation:
+   - Auth:      http://localhost:${PORT}/api/auth
+   - Users:     http://localhost:${PORT}/api/users
    - Companies: http://localhost:${PORT}/api/companies
+   - Trading:   http://localhost:${PORT}/api/trading
+   - Payments:  http://localhost:${PORT}/api/payments
    - Admin:     http://localhost:${PORT}/api/admin
    - Health:    http://localhost:${PORT}/health
 
